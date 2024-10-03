@@ -115,6 +115,7 @@ public class BodyController : MonoBehaviour
         {
             BodySwitch(false);
             _head.HeadSwitch(true);
+            this.gameObject.layer = 9;
         }
     }
     private void OnCollisionExit(Collision collision)
@@ -128,6 +129,7 @@ public class BodyController : MonoBehaviour
     {
         if (bodyswitch)
         {
+            this.gameObject.layer = 6;
             _rb.constraints = RigidbodyConstraints.None;
             _rb.constraints = RigidbodyConstraints.FreezeRotation;
             _head.HeadSwitch(false);

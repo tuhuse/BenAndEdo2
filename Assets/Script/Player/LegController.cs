@@ -16,6 +16,7 @@ public class LegController : MonoBehaviour
     public bool _isAlive = true;
     public bool _isSwitch = true;
     private Rigidbody _rb;
+    private BoxCollider _box;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +24,7 @@ public class LegController : MonoBehaviour
         _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
         _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
         _rb = GetComponent<Rigidbody>();
+        _box = GetComponent<BoxCollider>();
     }
 
     // Update is called once per frame
@@ -69,6 +71,7 @@ public class LegController : MonoBehaviour
             _headbody._isHaveLeg = false;
             _body.BodySwitch(true);
             _isAlive = false;
+            _box.enabled = false;
         }
       
         
