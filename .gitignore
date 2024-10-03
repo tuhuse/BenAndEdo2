@@ -46,6 +46,8 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+# 特定のファイルを無視
+Assets/NotPull
 
 # Unity3D generated meta files
 *.pidb.meta
