@@ -162,4 +162,5 @@ public class HeadController : MonoBehaviour
             _camera.transform.SetParent(this.transform, false);
         }
     }
+    
 }

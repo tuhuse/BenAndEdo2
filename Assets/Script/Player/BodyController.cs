@@ -141,9 +141,8 @@ public class BodyController : MonoBehaviour
         else
         {
             _isSwitch = false;
-            UnLeg(true);
             _camera.transform.SetParent(this.transform, false);
         }
     }
-
+    
 }

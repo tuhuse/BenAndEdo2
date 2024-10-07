@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class LegController : MonoBehaviour
 {
+    [SerializeField] private GameObject _bodyObject;
     [SerializeField] private GameObject _camera;
     [SerializeField] private BodyController _body;
     [SerializeField] private HeadController _headbody;
@@ -16,7 +17,7 @@ public class LegController : MonoBehaviour
     public bool _isAlive = true;
     public bool _isSwitch = true;
     private Rigidbody _rb;
-    private BoxCollider _box;
+    public BoxCollider _box;
     // Start is called before the first frame update
     void Start()
     {
@@ -110,5 +111,21 @@ public class LegController : MonoBehaviour
           
         }
      
+    }
+    public void RespawnWait()
+    {//体のリセット
+        _body.BodySwitch(false);
+        _body.UnLeg(false);
+        _body._isUnBody = false;
+        _bodyObject.layer = 6;
+        //頭のリセット
+        _headbody.HeadSwitch(false);
+        _headbody._isHaveLeg = true;
+        //足のリセット
+        _isAlive = true;
+        LegSwitch(true);
+        _camera.transform.SetParent(this.transform, true);
+        _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
+        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
     }
 }
