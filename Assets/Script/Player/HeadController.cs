@@ -22,6 +22,7 @@ public class HeadController : MonoBehaviour
 
     private bool _isSwitch=false;
     private bool _isJump = false;
+    public bool _isHeadAlive = true;
     public bool _isHaveLeg= true;
     private Rigidbody _rb;
     // Start is called before the first frame update
@@ -62,8 +63,10 @@ public class HeadController : MonoBehaviour
     }
     private void HeadMove()
     {
-        if (_isSwitch)
+        if (_isSwitch&&_isHeadAlive)
         {
+            _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
+            _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
             if (Input.GetKey(KeyCode.D))
             {
                 _rb.velocity = new Vector3(MoveSpeed, _rb.velocity.y, 0);
@@ -91,11 +94,12 @@ public class HeadController : MonoBehaviour
         if (!_isSwitch && _isHaveLeg)
         {
             this.transform.position = new Vector3(_legbody.transform.position.x, _legbody.transform.position.y + 2.75f, _legbody.transform.position.z);
-
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         if (!_isSwitch && !_isHaveLeg)
         {
             this.transform.position = new Vector3(_body.transform.position.x, _body.transform.position.y + 1.25f, _body.transform.position.z);
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
 
@@ -149,17 +153,16 @@ public class HeadController : MonoBehaviour
     {
         if (headswitch)
         {
-            
+            _rb.constraints = RigidbodyConstraints.None;
+            _rb.constraints = RigidbodyConstraints.FreezeRotationZ ;
             _isSwitch = true;
-            _camera.transform.SetParent(this.transform, true);
-            _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
-            _camera.transform.rotation = Quaternion.Euler(20, 0,0);
+           
         }
         else
         {
-           
+            _rb.constraints = RigidbodyConstraints.FreezeRotation;
             _isSwitch = false;
-            _camera.transform.SetParent(this.transform, false);
+          
         }
     }
     

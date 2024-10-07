@@ -39,6 +39,8 @@ public class LegController : MonoBehaviour
     }
     private void PlayerMove()
     {
+        _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
+        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
         if (Input.GetKey(KeyCode.D))
         {
             _rb.velocity = new Vector3(_moveSpeed, _rb.velocity.y, 0);
@@ -124,8 +126,6 @@ public class LegController : MonoBehaviour
         //‘«‚ÌƒŠƒZƒbƒg
         _isAlive = true;
         LegSwitch(true);
-        _camera.transform.SetParent(this.transform, true);
-        _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8);
-        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
+        _headbody._isHeadAlive = true;
     }
 }

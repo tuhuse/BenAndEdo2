@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Respawn : MonoBehaviour
 {
+    [SerializeField] private GameObject _camera;
     [SerializeField] private Transform _legRespawnPosition;
     [SerializeField] private Transform _headRespawnPosition;
     [SerializeField] private Transform _bodyRespawnPosition;
@@ -27,12 +28,14 @@ public class Respawn : MonoBehaviour
         if (collision.gameObject.CompareTag(player))
         {
             StartCoroutine(Fusion());
-            
+            _head.GetComponent<HeadController>()._isHeadAlive = false;
         }
     }
     private IEnumerator Fusion()
     {
         float waittime = 1f;
+        _camera.transform.position = new Vector3(_leg.transform.position.x, _leg.transform.position.y + 5, _leg.transform.position.z - 8);
+        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
         _leg.GetComponent<LegController>()._box.enabled = true;
         _leg.transform.position = _legRespawnPosition.position;
         yield return new WaitForSeconds(waittime);
