@@ -67,6 +67,7 @@ public class LegController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        int unLeg = 10;
         if (collision.gameObject.CompareTag("Yaiba"))
         {
             _body.UnLeg(true);
@@ -74,7 +75,7 @@ public class LegController : MonoBehaviour
             _headbody._isHaveLeg = false;
             _body.BodySwitch(true);
             _isAlive = false;
-            _box.enabled = false;
+            this.gameObject.layer = unLeg;
         }
       
         
@@ -124,6 +125,8 @@ public class LegController : MonoBehaviour
         _headbody.HeadSwitch(false);
         _headbody._isHaveLeg = true;
         //‘«‚ÌƒŠƒZƒbƒg
+        int leg = 8;
+        this.gameObject.layer = leg;
         _isAlive = true;
         LegSwitch(true);
         _headbody._isHeadAlive = true;
