@@ -4,45 +4,62 @@ using UnityEngine;
 
 public class Respawn : MonoBehaviour
 {
-    [SerializeField] private GameObject _camera;
-    [SerializeField] private Transform _legRespawnPosition;
-    [SerializeField] private Transform _headRespawnPosition;
-    [SerializeField] private Transform _bodyRespawnPosition;
-    [SerializeField] private GameObject _leg;
-    [SerializeField] private GameObject _head;
-    [SerializeField] private GameObject _body;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject _camera; // カメラオブジェクト
+    [SerializeField] private Transform _legRespawnPosition; // 脚のリスポーン位置
+    [SerializeField] private Transform _headRespawnPosition; // 頭のリスポーン位置
+    [SerializeField] private Transform _bodyRespawnPosition; // 体のリスポーン位置
+    [SerializeField] private GameObject _leg; // 脚オブジェクト
+    [SerializeField] private GameObject _head; // 頭オブジェクト
+    [SerializeField] private GameObject _body; // 体オブジェクト
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
+    // 衝突時の処理
     private void OnCollisionEnter(Collision collision)
     {
-        string player = "Player";
+        string player = "Player"; // プレイヤーを識別するタグ
+
+        // 衝突したオブジェクトがプレイヤーの場合
         if (collision.gameObject.CompareTag(player))
         {
+            // コルーチンを開始して融合処理を行う
             StartCoroutine(Fusion());
+
+            // 頭が生存していない状態に設定
             _head.GetComponent<HeadController>()._isHeadAlive = false;
         }
     }
+
+    // 融合処理を行うコルーチン
     private IEnumerator Fusion()
     {
-        float waittime = 1f;
+        float waittime = 1f; // 各ステップでの待機時間
+
+        // 体を"外れている"状態に設定
+        _body.GetComponent<BodyController>()._isUnBody = true;
+
+        // カメラを脚の位置に移動させる
         _camera.transform.position = new Vector3(_leg.transform.position.x, _leg.transform.position.y + 5, _leg.transform.position.z - 8);
         _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
-        _leg.GetComponent<LegController>()._box.enabled = true;
-        _leg.transform.position = _legRespawnPosition.position;
-        yield return new WaitForSeconds(waittime);
-        _body.transform.position = _bodyRespawnPosition.position;
-        yield return new WaitForSeconds(waittime);
-        _head.transform.position = _headRespawnPosition.position;
-        _leg.GetComponent<LegController>().RespawnWait();
 
+        // 脚のコライダーを有効化
+        _leg.GetComponent<LegController>()._box.enabled = true;
+
+        // 脚をリスポーン位置に移動
+        _leg.transform.position = _legRespawnPosition.position;
+
+        // 1秒間待機
+        yield return new WaitForSeconds(waittime);
+
+        // 体をリスポーン位置に移動
+        _body.transform.position = _bodyRespawnPosition.position;
+
+        // 再び1秒間待機
+        yield return new WaitForSeconds(waittime);
+
+        // 頭をリスポーン位置に移動
+        _head.transform.position = _headRespawnPosition.position;
+
+        // 脚をリスポーンさせる処理を実行
+        _leg.GetComponent<LegController>().RespawnWait();
     }
 }
