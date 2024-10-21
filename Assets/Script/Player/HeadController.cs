@@ -64,10 +64,7 @@ public class HeadController : MonoBehaviour
                 _bodyplayer.UnLeg(true); // 脚を取り外す
             }
         }
-        if (_isChange)
-        {
-            BodyChange();
-        }
+      
         // 頭の移動処理を実行
         HeadMove();
     }
@@ -122,6 +119,12 @@ public class HeadController : MonoBehaviour
             this.transform.position = new Vector3(_body.transform.position.x, _body.transform.position.y + 1.25f, _body.transform.position.z);
             this.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
+        // 'Q'キーが押された場合の処理
+        if (Input.GetKeyDown(KeyCode.Q))
+        { 
+        BodyChange();
+        }
+           
     }
 
     // 地面との接触時の処理
@@ -163,22 +166,26 @@ public class HeadController : MonoBehaviour
 
     private void BodyChange()
     {
-        // 'Q'キーが押された場合の処理
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (_isChange)
         {
+            _isChange = false;
             if (_leg._isAlive) // 脚が生存している場合
             {
                 HeadSwitch(false); // 頭の操作を無効化
                 _bodyplayer.UnLeg(false); // 脚を取り付ける
                 _leg.LegSwitch(true); // 脚の操作を有効化
+                
             }
             else
             {
                 HeadSwitch(false); // 頭の操作を無効化
                 _bodyplayer.BodySwitch(true); // 体の操作を有効化
                 _bodyplayer._isUnBody = false; // 体が外されていない状態に戻す
+               
             }
         }
+        
+        
     }
     // 頭の操作を有効化・無効化する処理
     public void HeadSwitch(bool headswitch)

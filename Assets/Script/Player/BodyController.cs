@@ -125,13 +125,22 @@ public class BodyController : MonoBehaviour
     // 刃物オブジェクトとの接触時処理
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Yaiba")) // "Yaiba"タグを持つオブジェクトに接触した場合
+        int body=6;
+        if (this.gameObject.layer == body)
         {
-            BodySwitch(false); // 体の操作を無効化
-            _isUnBody = true; // 体が外された状態にする
-            this.gameObject.layer = 9; // レイヤーを9に変更（未指定レイヤー等）
+            if (collision.gameObject.CompareTag("Yaiba")) // 刃物に接触した場合
+            {
+                int UnBody = 9;
+                BodySwitch(false); // 体の操作を無効化
+                _isUnBody = true; // 体が外された状態にする
+                this.gameObject.layer = UnBody; // レイヤーを9に変更
+
+                // 頭の位置を戻す処理があるか確認
+            }
         }
+       
     }
+
 
     // 地面から離れたときの処理
     private void OnCollisionExit(Collision collision)
@@ -147,8 +156,9 @@ public class BodyController : MonoBehaviour
     {
         if (bodyswitch)
         {
-            this.gameObject.layer = 6; // 操作用のレイヤーに変更
-            _rb.constraints = RigidbodyConstraints.None; // 動きの制約を解除
+            int body = 6;
+            this.gameObject.layer = body; // 操作用のレイヤーに変更
+            _rb.constraints = RigidbodyConstraints.None; //動きの制約を解除
             _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみ制約
             _head.HeadSwitch(false); // 頭の操作を無効化
             _isSwitch = true; // 体の操作を有効化

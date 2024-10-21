@@ -73,17 +73,23 @@ public class LegController : MonoBehaviour
     // 衝突開始時の処理
     private void OnCollisionEnter(Collision collision)
     {
+        int leg = 8;
         int unLeg = 10; // 脚が無効化された時のレイヤー番号
-
-        // "Yaiba"というタグのオブジェクトに接触した場合
-        if (collision.gameObject.CompareTag("Yaiba"))
+        if (this.gameObject.layer == leg)
         {
-            _body.UnLeg(true); // 体から脚を取り外す
-            _headbody._isHaveLeg = false; // 頭に脚がない状態に設定
-            _body.BodySwitch(true); // 体を操作可能にする
-            _isAlive = false; // 脚が生存していない状態に設定
-            this.gameObject.layer = unLeg; // 脚のレイヤーを変更
+            // "Yaiba"というタグのオブジェクトに接触した場合
+            if (collision.gameObject.CompareTag("Yaiba"))
+            {
+                LegSwitch(false);
+                _body.UnLeg(true); // 体から脚を取り外す
+                _headbody._isHaveLeg = false; // 頭に脚がない状態に設定
+                _body.BodySwitch(true); // 体を操作可能にする
+                print("Unleg");
+                _isAlive = false; // 脚が生存していない状態に設定
+                this.gameObject.layer = unLeg; // 脚のレイヤーを変更
+            }
         }
+        
     }
 
     // 衝突中の処理

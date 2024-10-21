@@ -23,9 +23,9 @@ public class Respawn : MonoBehaviour
         {
             // コルーチンを開始して融合処理を行う
             StartCoroutine(Fusion());
-
             // 頭が生存していない状態に設定
             _head.GetComponent<HeadController>()._isHeadAlive = false;
+
         }
     }
 
@@ -33,19 +33,21 @@ public class Respawn : MonoBehaviour
     private IEnumerator Fusion()
     {
         float waittime = 1f; // 各ステップでの待機時間
+        _camera.transform.position = new Vector3(_head.transform.position.x, _head.transform.position.y + 5, _head.transform.position.z - 8);
+        yield return new WaitForSeconds(2f);
 
         // 体を"外れている"状態に設定
         _body.GetComponent<BodyController>()._isUnBody = true;
 
-        // カメラを脚の位置に移動させる
-        _camera.transform.position = new Vector3(_leg.transform.position.x, _leg.transform.position.y + 5, _leg.transform.position.z - 8);
-        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
+        // 脚をリスポーン位置に移動
+        _leg.transform.position = _legRespawnPosition.position;
 
         // 脚のコライダーを有効化
         _leg.GetComponent<LegController>()._box.enabled = true;
 
-        // 脚をリスポーン位置に移動
-        _leg.transform.position = _legRespawnPosition.position;
+        // 脚が復活した後にカメラを脚の位置に移動
+        _camera.transform.position = new Vector3(_leg.transform.position.x, _leg.transform.position.y + 6, _leg.transform.position.z - 7);
+        _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
 
         // 1秒間待機
         yield return new WaitForSeconds(waittime);
@@ -62,4 +64,5 @@ public class Respawn : MonoBehaviour
         // 脚をリスポーンさせる処理を実行
         _leg.GetComponent<LegController>().RespawnWait();
     }
+
 }
