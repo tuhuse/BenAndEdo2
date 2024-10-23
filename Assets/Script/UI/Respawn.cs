@@ -12,7 +12,7 @@ public class Respawn : MonoBehaviour
     [SerializeField] private GameObject _head; // 頭オブジェクト
     [SerializeField] private GameObject _body; // 体オブジェクト
 
-   
+    [SerializeField] private CameraManager _cameraManager;
     // 衝突時の処理
     private void OnCollisionEnter(Collision collision)
     {
@@ -33,7 +33,6 @@ public class Respawn : MonoBehaviour
     private IEnumerator Fusion()
     {
         float waittime = 1f; // 各ステップでの待機時間
-        _camera.transform.position = new Vector3(_head.transform.position.x, _head.transform.position.y + 5, _head.transform.position.z - 8);
         yield return new WaitForSeconds(2f);
 
         // 体を"外れている"状態に設定
@@ -42,11 +41,9 @@ public class Respawn : MonoBehaviour
         // 脚をリスポーン位置に移動
         _leg.transform.position = _legRespawnPosition.position;
 
-        // 脚のコライダーを有効化
-        _leg.GetComponent<LegController>()._box.enabled = true;
 
         // 脚が復活した後にカメラを脚の位置に移動
-        _camera.transform.position = new Vector3(_leg.transform.position.x, _leg.transform.position.y + 6, _leg.transform.position.z - 7);
+        _cameraManager.SwitchBody(1);
         _camera.transform.rotation = Quaternion.Euler(20, 0, 0);
 
         // 1秒間待機

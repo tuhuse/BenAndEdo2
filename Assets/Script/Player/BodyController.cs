@@ -18,7 +18,8 @@ public class BodyController : MonoBehaviour
 
     [SerializeField] private HeadController _head; // 頭のコントローラへの参照
     [SerializeField] private LegController _leg; // 脚のコントローラへの参照
-   
+    [SerializeField] private CameraManager _cameraManager;
+
     private bool _isJump = false; // ジャンプ中かどうかのフラグ
     private bool _isSwitch = false; // 操作が体にスイッチされているかのフラグ
     private bool _isUnLeg = false; // 脚が取り外されているかのフラグ
@@ -43,6 +44,7 @@ public class BodyController : MonoBehaviour
     // 毎フレームの更新処理
     void Update()
     {
+        CameraRote();
         // 操作が体にスイッチされており、脚が外されていて体も外されていない場合に移動処理を行う
         if (_isSwitch && _isUnLeg && !_isUnBody)
         {
@@ -67,39 +69,52 @@ public class BodyController : MonoBehaviour
             }
         }
     }
-
+    private void CameraRote()
+    {
+        Vector3 cameraRote = _camera.transform.forward;
+        float roteSpeed = 10f;
+        cameraRote.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(cameraRote);
+        this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
+    }
     // プレイヤーの移動処理
     private void PlayerMove()
     {
-        // カメラを体に追従させる
-        _camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8); // カメラの位置を更新
-        _camera.transform.rotation = Quaternion.Euler(20, 0, 0); // カメラの角度を更新
 
-        // キー入力に応じて移動方向を変更
+        //// カメラを体に追従させる
+        //_camera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 5, this.transform.position.z - 8); // カメラの位置を更新
+        //_camera.transform.rotation = Quaternion.Euler(20, 0, 0); // カメラの角度を更新
+
+        // 入力に基づいて移動方向を計算
+        Vector3 moveDirection = Vector3.zero;
+
         if (Input.GetKey(KeyCode.D)) // 右移動
         {
-            _rb.velocity = new Vector3(_moveSpeed, _rb.velocity.y, 0);
+            moveDirection += transform.right * _moveSpeed;
         }
         if (Input.GetKey(KeyCode.A)) // 左移動
         {
-            _rb.velocity = new Vector3(-_moveSpeed, _rb.velocity.y, 0);
+            moveDirection -= transform.right * _moveSpeed;
         }
         if (Input.GetKey(KeyCode.W)) // 前進
         {
-            _rb.velocity = new Vector3(0, _rb.velocity.y, _moveSpeed);
+            moveDirection += transform.forward * _moveSpeed;
         }
         if (Input.GetKey(KeyCode.S)) // 後退
         {
-            _rb.velocity = new Vector3(0, _rb.velocity.y, -_moveSpeed);
+            moveDirection -= transform.forward * _moveSpeed;
         }
 
-        // スペースキーでジャンプ処理
-        if (_isJump)
+        // 計算した移動方向に基づいてプレイヤーを移動
+        moveDirection = moveDirection.normalized * _moveSpeed * Time.deltaTime;
+
+        // Rigidbodyを使って移動させる（MovePositionを使用）
+        _rb.MovePosition(transform.position + moveDirection);
+
+        // ジャンプ処理
+        if (_isJump && Input.GetKeyDown(KeyCode.Space)) // スペースキーが押されたらジャンプ
         {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, 0); // ジャンプ力を加える
-            }
+            _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
         }
     }
 
@@ -130,6 +145,7 @@ public class BodyController : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Yaiba")) // 刃物に接触した場合
             {
+                _cameraManager.SwitchBody(3);
                 int UnBody = 9;
                 BodySwitch(false); // 体の操作を無効化
                 _isUnBody = true; // 体が外された状態にする
