@@ -6,12 +6,14 @@ using UnityEngine;
 public class LegController : MonoBehaviour
 {
     [SerializeField] private GameObject _bodyObject; // 体オブジェクト
+    [SerializeField] private GameObject _otherLeg; // 別の足オブジェクト
     [SerializeField] private GameObject _camera; // カメラオブジェクト
     [SerializeField] private BodyController _body; // BodyControllerの参照
     [SerializeField] private HeadController _headbody; // HeadControllerの参照
+    private MoveManager _moveManager;
     [SerializeField] private CameraManager _cameraManager;
-    [SerializeField] private float _moveSpeed; // 移動速度
-    [SerializeField] private float _jumpPower; // ジャンプ力
+    private float _moveSpeed; // 移動速度
+    private float _jumpPower; // ジャンプ力
     private bool _isJump = false; // ジャンプ中かどうか
     public bool _isAlive = true; // 足が生存しているかどうか
     public bool _isSwitch = true; // 現在脚が操作可能かどうか
@@ -20,9 +22,13 @@ public class LegController : MonoBehaviour
     // 初期化処理
     void Start()
     {
-      
+
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントを取得
-   
+        _moveManager=gameObject.AddComponent<MoveManager>();
+        _moveManager.Speed();
+        _moveSpeed = _moveManager._moveSpeed;
+        _jumpPower = _moveManager._jumpPower;
+
     }
 
     // 毎フレームの更新処理
@@ -32,14 +38,14 @@ public class LegController : MonoBehaviour
         // 足が生存していて操作可能な場合に移動処理を行う
         if (_isAlive && _isSwitch)
         {
-           
+
             PlayerMove();
         }
     }
     private void CameraRote()
     {
         Vector3 cameraRote = _camera.transform.forward;
-        float roteSpeed = 10f;
+        float roteSpeed = 15f;
         cameraRote.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(cameraRote);
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
@@ -48,38 +54,38 @@ public class LegController : MonoBehaviour
     private void PlayerMove()
     {
 
-      
-            // 入力に基づいて移動方向を計算
-            Vector3 moveDirection = Vector3.zero;
 
-            if (Input.GetKey(KeyCode.D)) // 右移動
-            {
-                moveDirection += transform.right*_moveSpeed;
-            }
-            if (Input.GetKey(KeyCode.A)) // 左移動
-            {
-                moveDirection -= transform.right * _moveSpeed;
+        // 入力に基づいて移動方向を計算
+        Vector3 moveDirection = Vector3.zero;
+
+        if (Input.GetKey(KeyCode.D)) // 右移動
+        {
+            moveDirection += transform.right * _moveSpeed;
         }
-            if (Input.GetKey(KeyCode.W)) // 前進
-            {
-                moveDirection += transform.forward * _moveSpeed;
+        if (Input.GetKey(KeyCode.A)) // 左移動
+        {
+            moveDirection -= transform.right * _moveSpeed;
         }
-            if (Input.GetKey(KeyCode.S)) // 後退
-            {
-                moveDirection -= transform.forward * _moveSpeed;
+        if (Input.GetKey(KeyCode.W)) // 前進
+        {
+            moveDirection += transform.forward * _moveSpeed;
+        }
+        if (Input.GetKey(KeyCode.S)) // 後退
+        {
+            moveDirection -= transform.forward * _moveSpeed;
         }
 
-            // 計算した移動方向に基づいてプレイヤーを移動
-            moveDirection = moveDirection.normalized * _moveSpeed * Time.deltaTime;
+        // 計算した移動方向に基づいてプレイヤーを移動
+        moveDirection = moveDirection.normalized * _moveSpeed * Time.deltaTime;
 
-            // Rigidbodyを使って移動させる（MovePositionを使用）
-            _rb.MovePosition(transform.position + moveDirection);
-        
+        // Rigidbodyを使って移動させる（MovePositionを使用）
+        _rb.MovePosition(transform.position + moveDirection);
+
         // ジャンプ処理
-      if (_isJump && Input.GetKeyDown(KeyCode.Space)) // スペースキーが押されたらジャンプ
-    {
-        _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
-    }
+        if (_isJump && Input.GetKeyDown(KeyCode.Space)) // スペースキーが押されたらジャンプ
+        {
+            _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
+        }
     }
 
     // 衝突開始時の処理
@@ -87,22 +93,31 @@ public class LegController : MonoBehaviour
     {
         int leg = 8;
         int unLeg = 10; // 脚が無効化された時のレイヤー番号
-        if (this.gameObject.layer == leg)
+
+        // "Yaiba"というタグのオブジェクトに接触した場合
+        if (collision.gameObject.CompareTag("Yaiba") && this.gameObject.layer == leg)
         {
-            // "Yaiba"というタグのオブジェクトに接触した場合
-            if (collision.gameObject.CompareTag("Yaiba"))
+            if (_otherLeg.layer == unLeg)
             {
                 _cameraManager.SwitchBody(2);
                 LegSwitch(false);
                 _body.UnLeg(true); // 体から脚を取り外す
                 _headbody._isHaveLeg = false; // 頭に脚がない状態に設定
                 _body.BodySwitch(true); // 体を操作可能にする
-                print("Unleg");
                 _isAlive = false; // 脚が生存していない状態に設定
                 this.gameObject.layer = unLeg; // 脚のレイヤーを変更
             }
+            else
+            {
+                _moveManager = GetComponent<OneLleg>();
+                _moveManager.Speed();
+                _moveSpeed = _moveManager._moveSpeed;
+                _moveSpeed = _moveManager._jumpPower;
+            }
+
+
         }
-        
+
     }
 
     // 衝突中の処理

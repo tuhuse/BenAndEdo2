@@ -72,7 +72,7 @@ public class BodyController : MonoBehaviour
     private void CameraRote()
     {
         Vector3 cameraRote = _camera.transform.forward;
-        float roteSpeed = 10f;
+        float roteSpeed = 15f;
         cameraRote.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(cameraRote);
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
