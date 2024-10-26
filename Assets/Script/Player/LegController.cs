@@ -9,16 +9,23 @@ public class LegController : MonoBehaviour
     [SerializeField] private GameObject _otherLeg; // 別の足オブジェクト
     [SerializeField] private GameObject _camera; // カメラオブジェクト
     [SerializeField] private BodyController _body; // BodyControllerの参照
+    [SerializeField] private BodyController.BodySituation _bodySituation; // BodyControllerの参照
     [SerializeField] private HeadController _headbody; // HeadControllerの参照
+     private HeadController.HeadSituation _headSituation; // HeadControllerの参照
     private MoveManager _moveManager;
     [SerializeField] private CameraManager _cameraManager;
-    private float _moveSpeed; // 移動速度
-    private float _jumpPower; // ジャンプ力
+
     private bool _isJump = false; // ジャンプ中かどうか
-    public bool _isAlive = true; // 足が生存しているかどうか
-    public bool _isSwitch = true; // 現在脚が操作可能かどうか
+
     private Rigidbody _rb; // Rigidbodyの参照
 
+    public enum LegSituation
+    {
+        HaveLeg,
+        Head,
+        UnLeg
+    }
+    public LegSituation _legSituation = default;
     // 初期化処理
     void Start()
     {
@@ -26,21 +33,28 @@ public class LegController : MonoBehaviour
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントを取得
         _moveManager=gameObject.AddComponent<MoveManager>();
         _moveManager.Speed();
-        _moveSpeed = _moveManager._moveSpeed;
-        _jumpPower = _moveManager._jumpPower;
-
+        _legSituation = LegSituation.HaveLeg;
     }
 
     // 毎フレームの更新処理
     void Update()
     {
-        CameraRote();
-        // 足が生存していて操作可能な場合に移動処理を行う
-        if (_isAlive && _isSwitch)
+        switch (_legSituation)
         {
+            case LegSituation.HaveLeg:
+                //移動処理
+                PlayerMove(_moveManager._moveSpeed,_moveManager._jumpPower);
+                break;
 
-            PlayerMove();
+            case LegSituation.UnLeg:
+                //何もさせない
+                break;
+            case LegSituation.Head:
+                _rb.constraints = RigidbodyConstraints.FreezeAll;
+                break;
         }
+        CameraRote();
+      
     }
     private void CameraRote()
     {
@@ -51,7 +65,7 @@ public class LegController : MonoBehaviour
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
     }
     // プレイヤー移動処理
-    private void PlayerMove()
+    private void PlayerMove(float moveSpeed,float jumpPower)
     {
 
 
@@ -60,23 +74,23 @@ public class LegController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.D)) // 右移動
         {
-            moveDirection += transform.right * _moveSpeed;
+            moveDirection += transform.right * moveSpeed;
         }
         if (Input.GetKey(KeyCode.A)) // 左移動
         {
-            moveDirection -= transform.right * _moveSpeed;
+            moveDirection -= transform.right * moveSpeed;
         }
         if (Input.GetKey(KeyCode.W)) // 前進
         {
-            moveDirection += transform.forward * _moveSpeed;
+            moveDirection += transform.forward * moveSpeed;
         }
         if (Input.GetKey(KeyCode.S)) // 後退
         {
-            moveDirection -= transform.forward * _moveSpeed;
+            moveDirection -= transform.forward * moveSpeed;
         }
 
         // 計算した移動方向に基づいてプレイヤーを移動
-        moveDirection = moveDirection.normalized * _moveSpeed * Time.deltaTime;
+        moveDirection = moveDirection.normalized * moveSpeed * Time.deltaTime;
 
         // Rigidbodyを使って移動させる（MovePositionを使用）
         _rb.MovePosition(transform.position + moveDirection);
@@ -84,7 +98,7 @@ public class LegController : MonoBehaviour
         // ジャンプ処理
         if (_isJump && Input.GetKeyDown(KeyCode.Space)) // スペースキーが押されたらジャンプ
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
+            _rb.velocity = new Vector3(_rb.velocity.x, jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
         }
     }
 
@@ -101,18 +115,16 @@ public class LegController : MonoBehaviour
             {
                 _cameraManager.SwitchBody(2);
                 LegSwitch(false);
-                _body.UnLeg(true); // 体から脚を取り外す
-                _headbody._isHaveLeg = false; // 頭に脚がない状態に設定
+                _legSituation = LegSituation.UnLeg;
                 _body.BodySwitch(true); // 体を操作可能にする
-                _isAlive = false; // 脚が生存していない状態に設定
                 this.gameObject.layer = unLeg; // 脚のレイヤーを変更
             }
             else
             {
-                _moveManager = GetComponent<OneLleg>();
-                _moveManager.Speed();
-                _moveSpeed = _moveManager._moveSpeed;
-                _moveSpeed = _moveManager._jumpPower;
+               LegController otherLeg = _otherLeg.GetComponent<LegController>();
+              otherLeg._moveManager =_otherLeg.GetComponent<OneLleg>();
+              otherLeg._moveManager.Speed();
+               
             }
 
 
@@ -129,10 +141,12 @@ public class LegController : MonoBehaviour
             _isJump = true;
 
             // 脚が生存していない場合や操作可能でない場合は、全ての動きを停止
-            if (!_isAlive || !_isSwitch)
+            if (_legSituation == LegSituation.UnLeg)
             {
                 _rb.constraints = RigidbodyConstraints.FreezeAll;
             }
+              
+            
         }
     }
 
@@ -150,35 +164,43 @@ public class LegController : MonoBehaviour
     public void LegSwitch(bool legswitch)
     {
         if (legswitch) // 脚の操作が有効化された場合
-        {
-            _isSwitch = true; // 脚の操作を有効化
+        {       
+            _legSituation = LegSituation.HaveLeg;
             _cameraManager.SwitchBody(1);
             _rb.constraints = RigidbodyConstraints.None; // 動きの制約を解除
             _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみを制限
+          
         }
         else // 脚の操作が無効化された場合
         {
-            _isSwitch = false; // 脚の操作を無効化
+          
+            if (_legSituation == LegSituation.HaveLeg)
+            {
+                _legSituation = LegSituation.Head;
+            } else
+            {
+                _legSituation = LegSituation.UnLeg;
+            }
         }
     }
 
     // リスポーン処理
     public void RespawnWait()
     {
+        _moveManager = GetComponent<MoveManager>();
+        _moveManager.Speed();
         // 体のリセット
         _body.BodySwitch(false); // 体の操作を無効化
-        _body.UnLeg(false); // 脚を再装着
-        _body._isUnBody = false; // 体を外れていない状態に戻す
         _bodyObject.layer = 6; // 体のレイヤーをリセット
+        _bodySituation = BodyController.BodySituation.HaveLeg;
 
         // 頭のリセット
         _headbody.HeadSwitch(false); // 頭の操作を無効化
-        _headbody._isHaveLeg = true; // 頭に脚を再接続
+        _headSituation = HeadController.HeadSituation.HaveLeg;
 
         // 脚のリセット
         int leg = 8; // 脚のレイヤー番号を再設定
         this.gameObject.layer = leg;
-        _isAlive = true; // 脚を生存状態に設定
         LegSwitch(true); // 脚の操作を再び有効化
         _headbody._isHeadAlive = true; // 頭を生存状態に設定
     }

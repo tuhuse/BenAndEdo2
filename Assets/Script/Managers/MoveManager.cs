@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class MoveManager : MonoBehaviour
 {
+
     public float _moveSpeed;
     public float _jumpPower;
-   public virtual void Speed()
+    public virtual void Speed()
     {
         _moveSpeed = 55f;
         _jumpPower = 55f;
     }
-
 }
+
 public class OneLleg : MoveManager {
     public override void Speed()
     {
@@ -28,11 +29,23 @@ public class Body : OneLleg
         _moveSpeed = 40f;
         _jumpPower = 40f;
     }
-}public class Leg : Body
+}public class Head : Body
 {
-    public void LegSpeed()
+    public override void Speed()
     {
         _moveSpeed = 30f;
         _jumpPower = 30f;
+    }
+}public class ReturnBody : Body
+{
+    public override void Speed()
+    {
+        base.Speed();
+    }
+}public class ReturnOneLeg : OneLleg
+{
+    public override void Speed()
+    {
+        base.Speed();
     }
 }

@@ -9,65 +9,92 @@ public class BodyController : MonoBehaviour
 
     private Rigidbody _rb; // Rigidbodyの参照
 
-    [SerializeField]
-    private float _moveSpeed; // 移動速度
-    [SerializeField]
-    private float _jumpPower; // ジャンプ力
 
     private const float fallmove = 30; // 落下時の減速量定数
 
     [SerializeField] private HeadController _head; // 頭のコントローラへの参照
+    [SerializeField] private HeadController.HeadSituation _headSituation; // 頭のコントローラへの参照
     [SerializeField] private LegController _leg; // 脚のコントローラへの参照
+    [SerializeField] private LegController.LegSituation _legSituation; // 脚のコントローラへの参照
     [SerializeField] private CameraManager _cameraManager;
+    private MoveManager _moveManager;
 
     private bool _isJump = false; // ジャンプ中かどうかのフラグ
-    private bool _isSwitch = false; // 操作が体にスイッチされているかのフラグ
-    private bool _isUnLeg = false; // 脚が取り外されているかのフラグ
-    public bool _isUnBody = false; // 体が取り外されているかのフラグ
-
+    public enum BodySituation
+    {
+        HaveLeg,//足がある時
+        SwitchLeg,//足があるかつ頭に主導権がある場合
+        UnLeg,//足がないときかつ身体に主導権がある場合
+        Head,//足がないかつ頭に主導権があるとき
+    }
+    public BodySituation _bodySituation = default;
     // 初期化処理
     void Start()
     {
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントの取得
+        _bodySituation = BodySituation.HaveLeg;
+
+        _moveManager = gameObject.AddComponent<Body>();
+
     }
 
     // 物理演算の更新処理
     private void FixedUpdate()
     {
-        // ジャンプしていない場合、落下速度を調整
-        if (!_isJump)
+        if (_bodySituation == BodySituation.UnLeg)
         {
-            _rb.velocity -= new Vector3(0, _jumpPower / fallmove, 0); // ジャンプ力に応じた減速
+            // ジャンプしていない場合、落下速度を調整
+            if (!_isJump)
+            {
+                _rb.velocity -= new Vector3(0, _moveManager._jumpPower / fallmove, 0); // ジャンプ力に応じた減速
+            }
         }
+      
     }
 
     // 毎フレームの更新処理
     void Update()
     {
         CameraRote();
-        // 操作が体にスイッチされており、脚が外されていて体も外されていない場合に移動処理を行う
-        if (_isSwitch && _isUnLeg && !_isUnBody)
+        switch (_bodySituation) 
         {
-            PlayerMove(); // プレイヤーの移動処理を実行
+            case BodySituation.HaveLeg:
+                // 体を脚の位置に連動させる
+                _rb.constraints = RigidbodyConstraints.None; // 動きの制約を解除
+                _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみ制約
+                this.transform.position = new Vector3(_legbody.transform.position.x, _legbody.transform.position.y + 1.5f, _legbody.transform.position.z); // 体の位置を脚の上に配置
+
+                if (_legSituation == LegController.LegSituation.Head) // 脚が生存状態かつ頭に主導権が移った場合
+                {
+                    _bodySituation = BodySituation.SwitchLeg;
+                }
+                break;
+            case BodySituation.SwitchLeg:
+           
+                if (_legSituation == LegController.LegSituation.HaveLeg) // 脚に主導権が移った場合
+                {
+                    _bodySituation = BodySituation.HaveLeg;
+                }
+                break;
+            case BodySituation.UnLeg:
+                PlayerMove(_moveManager._moveSpeed, _moveManager._jumpPower); // プレイヤーの移動処理を実行
+
+                if (_headSituation == HeadController.HeadSituation.Head) // 頭に主導権が移った場合
+                {
+                    _bodySituation = BodySituation.Head;
+                }
+                break;
+            case BodySituation.Head:
+                if (_headSituation ==HeadController.HeadSituation.HaveBody) // 脚が生存状態の場合
+                {
+                    _bodySituation = BodySituation.UnLeg;
+                }
+                break;
         }
 
-        // 脚が外されておらず、体の操作が無効化されていない場合
-        if (!_isUnLeg && !_isSwitch && !_isUnBody)
-        {
-            // 体を脚の位置に連動させる
-            _rb.constraints = RigidbodyConstraints.None; // 動きの制約を解除
-            _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみ制約
-            this.transform.position = new Vector3(_legbody.transform.position.x, _legbody.transform.position.y + 1.5f, _legbody.transform.position.z); // 体の位置を脚の上に配置
-        }
-
-        // 脚が外されている場合
-        if (_isUnLeg)
-        {
-            if (_leg._isAlive) // 脚が生存状態の場合
-            {
-                _rb.constraints = RigidbodyConstraints.FreezeAll; // 動きを完全に停止
-            }
-        }
+       
+           
+        
     }
     private void CameraRote()
     {
@@ -78,7 +105,7 @@ public class BodyController : MonoBehaviour
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
     }
     // プレイヤーの移動処理
-    private void PlayerMove()
+    private void PlayerMove(float moveSpeed,float jumpPower)
     {
 
         //// カメラを体に追従させる
@@ -90,23 +117,23 @@ public class BodyController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.D)) // 右移動
         {
-            moveDirection += transform.right * _moveSpeed;
+            moveDirection += transform.right * moveSpeed;
         }
         if (Input.GetKey(KeyCode.A)) // 左移動
         {
-            moveDirection -= transform.right * _moveSpeed;
+            moveDirection -= transform.right * moveSpeed;
         }
         if (Input.GetKey(KeyCode.W)) // 前進
         {
-            moveDirection += transform.forward * _moveSpeed;
+            moveDirection += transform.forward * moveSpeed;
         }
         if (Input.GetKey(KeyCode.S)) // 後退
         {
-            moveDirection -= transform.forward * _moveSpeed;
+            moveDirection -= transform.forward * moveSpeed;
         }
 
         // 計算した移動方向に基づいてプレイヤーを移動
-        moveDirection = moveDirection.normalized * _moveSpeed * Time.deltaTime;
+        moveDirection = moveDirection.normalized * moveSpeed * Time.deltaTime;
 
         // Rigidbodyを使って移動させる（MovePositionを使用）
         _rb.MovePosition(transform.position + moveDirection);
@@ -114,14 +141,8 @@ public class BodyController : MonoBehaviour
         // ジャンプ処理
         if (_isJump && Input.GetKeyDown(KeyCode.Space)) // スペースキーが押されたらジャンプ
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
+            _rb.velocity = new Vector3(_rb.velocity.x, jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
         }
-    }
-
-    // 脚の取り外し状態を管理
-    public void UnLeg(bool unleg)
-    {
-        _isUnLeg = unleg;
     }
 
     // 地面との接触中の処理
@@ -130,7 +151,7 @@ public class BodyController : MonoBehaviour
         if (collision.gameObject.CompareTag("Floor")) // 床に接触している場合
         {
             _isJump = true; // ジャンプ可能状態に設定
-            if (!_isSwitch) // 操作が体にスイッチされていない場合
+            if (_bodySituation==BodySituation.Head) // 操作が体にスイッチされていない場合
             {
                 _rb.constraints = RigidbodyConstraints.FreezeAll; // 動きを停止
             }
@@ -145,16 +166,24 @@ public class BodyController : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Yaiba")) // 刃物に接触した場合
             {
+                _head.HeadSwitch(true); // 頭の操作を有効化
+                _bodySituation = BodySituation.Head; // 体の操作を無効化
                 _cameraManager.SwitchBody(3);
                 int UnBody = 9;
                 BodySwitch(false); // 体の操作を無効化
-                _isUnBody = true; // 体が外された状態にする
                 this.gameObject.layer = UnBody; // レイヤーを9に変更
 
                 // 頭の位置を戻す処理があるか確認
             }
         }
-       
+        int unLeg = 10;
+        if (collision.gameObject.layer == unLeg)
+        {
+            if (_legSituation == LegController.LegSituation.Head)
+            {
+                _rb.constraints = RigidbodyConstraints.FreezeAll; // 動きを完全に停止
+            }          
+        }
     }
 
 
@@ -176,13 +205,12 @@ public class BodyController : MonoBehaviour
             this.gameObject.layer = body; // 操作用のレイヤーに変更
             _rb.constraints = RigidbodyConstraints.None; //動きの制約を解除
             _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみ制約
+            _bodySituation = BodySituation.UnLeg;// 体の操作を有効化
             _head.HeadSwitch(false); // 頭の操作を無効化
-            _isSwitch = true; // 体の操作を有効化
+            _moveManager = GetComponent<Body>();
+            _moveManager.Speed();
+          
         }
-        else
-        {
-            _isSwitch = false; // 体の操作を無効化
-            _head.HeadSwitch(true); // 頭の操作を有効化
-        }
+       
     }
 }

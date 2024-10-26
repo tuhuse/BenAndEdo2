@@ -36,7 +36,7 @@ public class Respawn : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // 体を"外れている"状態に設定
-        _body.GetComponent<BodyController>()._isUnBody = true;
+        _body.GetComponent<BodyController>()._bodySituation = BodyController.BodySituation.HaveLeg;
 
         // 脚をリスポーン位置に移動
         _leg.transform.position = _legRespawnPosition.position;
