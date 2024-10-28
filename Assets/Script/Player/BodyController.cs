@@ -34,7 +34,7 @@ public class BodyController : MonoBehaviour
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントの取得
         _bodySituation = BodySituation.HaveLeg;
 
-        _moveManager = gameObject.AddComponent<Body>();
+        _moveManager = gameObject.GetComponent<Body>();
 
     }
 
@@ -105,7 +105,7 @@ public class BodyController : MonoBehaviour
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
     }
     // プレイヤーの移動処理
-    private void PlayerMove(float moveSpeed,float jumpPower)
+    public void PlayerMove(float moveSpeed,float jumpPower)
     {
 
         //// カメラを体に追従させる

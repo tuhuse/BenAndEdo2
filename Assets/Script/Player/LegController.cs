@@ -12,7 +12,8 @@ public class LegController : MonoBehaviour
     [SerializeField] private BodyController.BodySituation _bodySituation; // BodyControllerの参照
     [SerializeField] private HeadController _headbody; // HeadControllerの参照
      private HeadController.HeadSituation _headSituation; // HeadControllerの参照
-    private MoveManager _moveManager;
+
+    private PlayerMoveManager _playermoveManager;
     [SerializeField] private CameraManager _cameraManager;
 
     private bool _isJump = false; // ジャンプ中かどうか
@@ -31,9 +32,10 @@ public class LegController : MonoBehaviour
     {
 
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントを取得
-        _moveManager=gameObject.AddComponent<MoveManager>();
-        _moveManager.Speed();
+        //_moveManager=gameObject.GetComponent<MoveManager>();
+        //_moveManager.Speed();
         _legSituation = LegSituation.HaveLeg;
+        SetMoveMent<TwoLegPlayerMoveManager>();
     }
 
     // 毎フレームの更新処理
@@ -43,7 +45,8 @@ public class LegController : MonoBehaviour
         {
             case LegSituation.HaveLeg:
                 //移動処理
-                PlayerMove(_moveManager._moveSpeed,_moveManager._jumpPower);
+                //PlayerMove(_moveManager._moveSpeed,_moveManager._jumpPower);
+                _playermoveManager.PlayerMove(_rb);
                 break;
 
             case LegSituation.UnLeg:
@@ -64,8 +67,12 @@ public class LegController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(cameraRote);
         this.gameObject.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, roteSpeed * Time.deltaTime);
     }
+    public void SetMoveMent<T>() where T : PlayerMoveManager
+    {
+
+    }
     // プレイヤー移動処理
-    private void PlayerMove(float moveSpeed,float jumpPower)
+    public void PlayerMove(float moveSpeed,float jumpPower)
     {
 
 
@@ -121,9 +128,10 @@ public class LegController : MonoBehaviour
             }
             else
             {
-               LegController otherLeg = _otherLeg.GetComponent<LegController>();
-              otherLeg._moveManager =_otherLeg.GetComponent<OneLleg>();
-              otherLeg._moveManager.Speed();
+                this.gameObject.layer = unLeg; // 脚のレイヤーを変更
+                LegController otherLeg = _otherLeg.GetComponent<LegController>();
+              //otherLeg._moveManager =_otherLeg.GetComponent<OneLleg>();
+              //otherLeg._moveManager.Speed();
                
             }
 
@@ -187,8 +195,8 @@ public class LegController : MonoBehaviour
     // リスポーン処理
     public void RespawnWait()
     {
-        _moveManager = GetComponent<MoveManager>();
-        _moveManager.Speed();
+        //_moveManager = GetComponent<MoveManager>();
+        //_moveManager.Speed();
         // 体のリセット
         _body.BodySwitch(false); // 体の操作を無効化
         _bodyObject.layer = 6; // 体のレイヤーをリセット
