@@ -192,8 +192,8 @@ public class HeadController : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.None; // “®‚«‚Ì§–ñ‚ğ‰ğœ
             _rb.constraints = RigidbodyConstraints.FreezeRotationZ; // Z²‚Ì‰ñ“]‚Ì‚İ§–ñ
             _headSituation = HeadSituation.Head;
-            _moveManager = GetComponent<Head>();
-            _moveManager.Speed();
+            //_moveManager = GetComponent<Head>();
+            //_moveManager.Speed();
         }
         else
         {

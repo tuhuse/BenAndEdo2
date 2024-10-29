@@ -46,7 +46,7 @@ public class LegController : MonoBehaviour
             case LegSituation.HaveLeg:
                 //移動処理
                 //PlayerMove(_moveManager._moveSpeed,_moveManager._jumpPower);
-                _playermoveManager.PlayerMove(_rb);
+                _playermoveManager?.PlayerMove(_rb);
                 break;
 
             case LegSituation.UnLeg:
@@ -69,7 +69,12 @@ public class LegController : MonoBehaviour
     }
     public void SetMoveMent<T>() where T : PlayerMoveManager
     {
-
+        if (_playermoveManager != null)
+        {
+            Destroy(_playermoveManager);
+           
+        }
+        _playermoveManager = gameObject.AddComponent<T>();
     }
     // プレイヤー移動処理
     public void PlayerMove(float moveSpeed,float jumpPower)
@@ -130,6 +135,7 @@ public class LegController : MonoBehaviour
             {
                 this.gameObject.layer = unLeg; // 脚のレイヤーを変更
                 LegController otherLeg = _otherLeg.GetComponent<LegController>();
+                SetMoveMent<OneLegPlayerMoveManager>();
               //otherLeg._moveManager =_otherLeg.GetComponent<OneLleg>();
               //otherLeg._moveManager.Speed();
                

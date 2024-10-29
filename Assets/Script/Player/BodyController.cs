@@ -207,8 +207,8 @@ public class BodyController : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.FreezeRotation; // ‰ñ“]‚Ì‚İ§–ñ
             _bodySituation = BodySituation.UnLeg;// ‘Ì‚Ì‘€ì‚ğ—LŒø‰»
             _head.HeadSwitch(false); // “ª‚Ì‘€ì‚ğ–³Œø‰»
-            _moveManager = GetComponent<Body>();
-            _moveManager.Speed();
+            //_moveManager = GetComponent<Body>();
+            //_moveManager.Speed();
           
         }
        
