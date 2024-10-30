@@ -11,13 +11,19 @@ public class BodyController : MonoBehaviour
 
 
     private const float fallmove = 30; // 落下時の減速量定数
-
     [SerializeField] private HeadController _head; // 頭のコントローラへの参照
-    [SerializeField] private HeadController.HeadSituation _headSituation; // 頭のコントローラへの参照
+    private HeadController.HeadSituation _headSituation
+    {
+        get { return _head._headSituation; }
+    }
     [SerializeField] private LegController _leg; // 脚のコントローラへの参照
-    [SerializeField] private LegController.LegSituation _legSituation; // 脚のコントローラへの参照
+    private LegController.LegSituation _legSituation
+    {
+        get { return _leg._legSituation; }
+    }
+
     [SerializeField] private CameraManager _cameraManager;
-    private MoveManager _moveManager;
+   [SerializeField] private MoveManager _moveManager;
 
     private bool _isJump = false; // ジャンプ中かどうかのフラグ
     public enum BodySituation
@@ -34,7 +40,7 @@ public class BodyController : MonoBehaviour
         _rb = GetComponent<Rigidbody>(); // Rigidbodyコンポーネントの取得
         _bodySituation = BodySituation.HaveLeg;
 
-        _moveManager = gameObject.GetComponent<Body>();
+        
 
     }
 
@@ -46,7 +52,7 @@ public class BodyController : MonoBehaviour
             // ジャンプしていない場合、落下速度を調整
             if (!_isJump)
             {
-                _rb.velocity -= new Vector3(0, _moveManager._jumpPower / fallmove, 0); // ジャンプ力に応じた減速
+                _rb.velocity -= new Vector3(0, _leg._playermoveManager._jumpPower / fallmove, 0); // ジャンプ力に応じた減速
             }
         }
       
@@ -77,7 +83,7 @@ public class BodyController : MonoBehaviour
                 }
                 break;
             case BodySituation.UnLeg:
-                PlayerMove(_moveManager._moveSpeed, _moveManager._jumpPower); // プレイヤーの移動処理を実行
+              _leg._playermoveManager?.PlayerMove(_rb);
 
                 if (_headSituation == HeadController.HeadSituation.Head) // 頭に主導権が移った場合
                 {
@@ -207,9 +213,10 @@ public class BodyController : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.FreezeRotation; // 回転のみ制約
             _bodySituation = BodySituation.UnLeg;// 体の操作を有効化
             _head.HeadSwitch(false); // 頭の操作を無効化
+            _moveManager.BodyMove(true);
             //_moveManager = GetComponent<Body>();
             //_moveManager.Speed();
-          
+
         }
        
     }

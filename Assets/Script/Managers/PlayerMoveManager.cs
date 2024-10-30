@@ -16,6 +16,10 @@ public class TwoLegPlayerMoveManager : PlayerMoveManager {
         _jumpPower = 60f; // ’Êí‚ÌƒWƒƒƒ“ƒv—Í
 
     }
+    private void FixedUpdate()
+    {
+        
+    }
     public override void PlayerMove(Rigidbody rb)
     {
         Vector3 moveDirection = Vector3.zero;
@@ -134,7 +138,7 @@ public class BodyPlayerMoveManager : OneLegPlayerMoveManager
         }
     }
 }
-public class HeadPlayerMove : BodyPlayerMoveManager
+public class HeadPlayerMoveManager : BodyPlayerMoveManager
 {
     private void Start()
     {
