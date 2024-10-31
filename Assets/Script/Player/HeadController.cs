@@ -12,16 +12,23 @@ public class HeadController : MonoBehaviour
     [SerializeField] private float _jumpPower;
 
     private const float FALLSPEED = 30;
-   [SerializeField] private MoveManager _moveManager;
+   //[SerializeField] private MoveManager _moveManager;
+    public PlayerMoveManager _playerMoveManager;
     private Rigidbody _rb;
     private bool _isJump = false;
     public bool _isHeadAlive = true;
     private bool _isChange = false;
 
     [SerializeField] private BodyController _bodyplayer;
-    private BodyController.BodySituation _bodySituation;
-    [SerializeField] private LegController _leg;
-    private LegController.LegSituation _legSituation;
+    private BodyController.BodySituation _bodySituation
+    {
+        get { return _bodyplayer._bodySituation; }
+    }
+    [SerializeField] private LegController _leg; // 脚のコントローラへの参照
+    private LegController.LegSituation _legSituation
+    {
+        get { return _leg._legSituation; }
+    }
     [SerializeField] private CameraManager _cameraManager;
 
     public enum HeadSituation
@@ -44,7 +51,7 @@ public class HeadController : MonoBehaviour
     {
         if (_headSituation == HeadSituation.Head && !_isJump)
         {
-            //_rb.velocity -= new Vector3(0, _moveManager._jumpPower / FALLSPEED, 0);
+            _rb.velocity -= new Vector3(0, _playerMoveManager._jumpPower / FALLSPEED, 0);
         }
     }
 
@@ -61,6 +68,7 @@ public class HeadController : MonoBehaviour
         {
             case HeadSituation.HaveLeg:
                 AlignWithLegBody();
+
                 if (_legSituation == LegController.LegSituation.UnLeg)
                     _headSituation = HeadSituation.HaveBody;
                 break;
@@ -70,11 +78,31 @@ public class HeadController : MonoBehaviour
                 break;
 
             case HeadSituation.Head:
-                _leg._playermoveManager?.PlayerMove(_rb);
+                _playerMoveManager?.PlayerMove(_rb);
+                if (Input.GetKeyDown(KeyCode.Space) && _isJump) // スペースキーが押されたらジャンプ
+                {
+                    _rb.velocity = new Vector3(_rb.velocity.x, _playerMoveManager._jumpPower, _rb.velocity.z); // Y軸にジャンプ力を設定
+                }
+                if (_legSituation == LegController.LegSituation.HaveLeg)
+                {
+                    _headSituation = HeadSituation.HaveLeg;
+                }else if (_bodySituation == BodyController.BodySituation.UnLeg)
+                {
+                    _headSituation = HeadSituation.HaveBody;
+                }
                 break;
         }
     }
+    private void SetMoveMent<T>() where T : PlayerMoveManager
+    {
+        if (_playerMoveManager != null)
+        {
+            Destroy(_playerMoveManager);
+        }
 
+        _playerMoveManager = gameObject.AddComponent<T>();
+        Debug.Log("SetMoveMent called, PlayerMoveManager set to: " + typeof(T).Name);
+    }
     private void HandleInput()
     {
         if (_headSituation == HeadSituation.Head && Input.GetKeyDown(KeyCode.Q))
@@ -91,12 +119,14 @@ public class HeadController : MonoBehaviour
 
     private void AlignWithLegBody()
     {
-        transform.position = new Vector3(_legbody.transform.position.x, _legbody.transform.position.y + 2.75f, _legbody.transform.position.z);
+        transform.position 
+            = new Vector3(_legbody.transform.position.x, _legbody.transform.position.y + 2.75f, _legbody.transform.position.z);
     }
 
     private void AlignWithBody()
     {
-        transform.position = new Vector3(_body.transform.position.x, _body.transform.position.y + 1.25f, _body.transform.position.z);
+        transform.position 
+            = new Vector3(_body.transform.position.x, _body.transform.position.y + 1.25f, _body.transform.position.z);
     }
 
     private void CameraRotate()
@@ -104,7 +134,7 @@ public class HeadController : MonoBehaviour
         Vector3 cameraRotation = _camera.transform.forward;
         cameraRotation.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(cameraRotation);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 15f * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 20f * Time.deltaTime);
     }
 
     private void SwitchToHeadMode()
@@ -133,7 +163,7 @@ public class HeadController : MonoBehaviour
                 _headSituation = HeadSituation.HaveLeg;
                 _leg.LegSwitch(true);
                 _cameraManager.SwitchBody(1);
-               
+                _rb.constraints =  RigidbodyConstraints.FreezeRotation;
             }
             else
             {
@@ -141,7 +171,7 @@ public class HeadController : MonoBehaviour
                 _headSituation = HeadSituation.HaveBody;
                 _bodyplayer.BodySwitch(true);
                 _cameraManager.SwitchBody(2);
-                _moveManager.BodyMove(true);
+                //_moveManager.BodyMove(true);
             }
         }
     }
@@ -150,11 +180,13 @@ public class HeadController : MonoBehaviour
     {
         if (headswitch)
         {
-            _rb.constraints = headswitch ? RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationZ : RigidbodyConstraints.FreezeRotation;
+            _rb.constraints 
+                = headswitch ? RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotationZ : RigidbodyConstraints.FreezeRotation;
             _headSituation = headswitch ? HeadSituation.Head : _headSituation;
             _fusionUi.SetActive(headswitch);
             _isChange = headswitch;
-            _moveManager.HeadMove(true);
+            SetMoveMent<HeadPlayerMoveManager>();
+            //_moveManager.HeadMove(true);
         }
       
     }
@@ -162,7 +194,10 @@ public class HeadController : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
+        {
             _isJump = true;
+        }
+          
 
         if (collision.gameObject.layer == 9 && _headSituation == HeadSituation.Head)
         {
@@ -174,7 +209,10 @@ public class HeadController : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
+        {
             _isJump = false;
+        }
+           
 
         if (collision.gameObject.layer == 9)
         {
