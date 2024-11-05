@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory2 : MonoBehaviour
+public class Inventory : MonoBehaviour
 {
     [SerializeField] private GetItem[] _items;
     [SerializeField] private int _incentorySize=5;  
@@ -19,7 +20,7 @@ public class Inventory2 : MonoBehaviour
             if (_items[itemnumber] == null)
             {
                 _items[itemnumber] = newItem;
-                Debug.Log(newItem._itemName + " をインベントリに追加しました。");
+                Debug.Log(newItem.MyItemName + " をインベントリに追加しました。");
                 return true;
             }
         }
@@ -32,13 +33,19 @@ public class Inventory2 : MonoBehaviour
             if (_items[itemnumber] != null)
             {
                 _items[itemnumber] = null;
-                Debug.Log(_items[itemnumber]._itemName + " をインベントリからさくじょしました。");
+                Debug.Log(_items[itemnumber].MyItemName + " をインベントリからさくじょしました。");
                 return true;
             }
         }
         Debug.Log("アイテムが見つかりませんでした");
         return false;
     }
+
+    public GetItem[] GetItems()
+    {
+        return _items;
+    }
+
     // インベントリの内容を表示するメソッド
     public void DisplayInventory()
     {
@@ -47,7 +54,7 @@ public class Inventory2 : MonoBehaviour
         {
             if (_items[itemnumber] != null)
             {
-                Debug.Log("スロット " + itemnumber + ": " + _items[itemnumber]._itemName);
+                Debug.Log("スロット " + itemnumber + ": " + _items[itemnumber].MyItemName);
             }
             else
             {

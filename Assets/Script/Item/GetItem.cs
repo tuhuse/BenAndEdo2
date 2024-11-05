@@ -1,15 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-[System.Serializable]
-public class GetItem : MonoBehaviour
+
+[CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
+public class GetItem : ScriptableObject
 {
-    public int _itemID;
-    public string _itemName;
-    public GetItem(string itemname, int itemID)
+    [SerializeField] private string _itemName;
+    [SerializeField] private int _itemID;
+    [SerializeField] private Sprite _icon; // アイテムのアイコン（任意）
+
+    // プロパティで外部からアクセス
+    public string MyItemName
     {
-        _itemID = itemID;
-        _itemName = itemname;
+        get { return _itemName; }
+    }
+    public int MyItemID
+    {
+        get { return _itemID; }
+    }
+    public Sprite MyIcon
+    {
+        get { return _icon; }
+    }
+    public virtual void UseItem()
+    {
+        
+    }
+}
+[CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
+public class HealItem : GetItem
+{
+    private int _healAmount = 1;
+    public int HealAmount
+    {
+        get { return _healAmount;}
     }
 
 }
