@@ -8,10 +8,10 @@ public class ValueManager : MonoBehaviour
     private const float MAXDASHHP=100f;
     private const float HEAL = 10;
 
-    public float _moveSpeed;
+    public float _moveSpeed { get; set; }
     public float _dashHP;
    
-    public int _playerHP;
+    public int _playerHP { get; set; }
     private Coroutine _dashRecoveryCoroutine;
     // Start is called before the first frame update
     void Start()
@@ -65,5 +65,9 @@ public class ValueManager : MonoBehaviour
     {      
             StartCoroutine(ReturnSpeed());
             _playerHP--;
+    }
+    public void Heal()
+    {
+        _playerHP++;
     }
 }

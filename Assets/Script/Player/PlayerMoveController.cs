@@ -44,6 +44,7 @@ public class PlayerMoveController: MonoBehaviour
             _isDash = false;
             _valueManager.StartDashRecovery();
         }
+
         
     }
    

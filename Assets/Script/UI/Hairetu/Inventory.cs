@@ -2,24 +2,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private GetItem[] _items;
+    [SerializeField] private Item[] _items;
+    private Sprite[] _itemIcon; 
     [SerializeField] private int _incentorySize=5;  
     // Start is called before the first frame update
     void Start()
     {
-        _items = new GetItem[_incentorySize];
+        _items = new Item[_incentorySize];
     }
-
-  public bool AddItem(GetItem newItem)
+    private void Update()
+    {
+        if (Use())
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _items[0].UseItem();
+            }
+        }
+    }
+    public bool AddItem(Item newItem)
     {
         for(int itemnumber = 0; itemnumber < _items.Length; itemnumber++)
         {
             if (_items[itemnumber] == null)
             {
                 _items[itemnumber] = newItem;
+                //_itemIcon[itemnumber] = newItem.MyIcon;
                 Debug.Log(newItem.MyItemName + " をインベントリに追加しました。");
                 return true;
             }
@@ -33,6 +44,7 @@ public class Inventory : MonoBehaviour
             if (_items[itemnumber] != null)
             {
                 _items[itemnumber] = null;
+                _itemIcon[itemnumber] = null;
                 Debug.Log(_items[itemnumber].MyItemName + " をインベントリからさくじょしました。");
                 return true;
             }
@@ -40,8 +52,18 @@ public class Inventory : MonoBehaviour
         Debug.Log("アイテムが見つかりませんでした");
         return false;
     }
-
-    public GetItem[] GetItems()
+    public bool Use()
+    {
+        if (_items != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public Item[] GetItems()
     {
         return _items;
     }

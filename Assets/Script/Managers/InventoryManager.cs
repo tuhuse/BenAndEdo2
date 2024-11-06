@@ -7,7 +7,7 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }  // シングルトンインスタンス
     [SerializeField] private Inventory playerInventory;  // プレイヤーのインベントリ
-    [SerializeField] private InventoryUI inventoryUI;  // InventoryUI の参照
+    //[SerializeField] private InventoryUI inventoryUI;  // InventoryUI の参照
     private void Awake()
     {
         // シングルトンパターンの実装
@@ -22,12 +22,12 @@ public class InventoryManager : MonoBehaviour
     }
 
     // アイテムをインベントリに追加するメソッド
-    public void AddItemToInventory(GetItem item)
+    public void AddItemToInventory(Item item)
     {
         if (playerInventory.AddItem(item))
         {
             Debug.Log(item.MyItemName + " をインベントリに追加しました。");
-            inventoryUI.UpdateInventoryUI(playerInventory.GetItems());  // UIを更新
+            //inventoryUI.UpdateInventoryUI(playerInventory.GetItems());  // UIを更新
         }
     }
 
