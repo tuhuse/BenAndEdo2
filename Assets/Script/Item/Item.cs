@@ -17,7 +17,6 @@ public class Item : ScriptableObject
     [SerializeField] private bool _isStackable;
     [SerializeField, TextArea] private string _description;
     [SerializeField] private int _maxStack = 5;
-    [SerializeField] private Inventory _inventory;
     //[SerializeField] private InventorySlot _inventorySlot;
 
     public string MyItemName => _itemName;
@@ -32,7 +31,7 @@ public class Item : ScriptableObject
 
     public virtual void UseItem()
     {
-        _inventory.RemoveItem(MyItemID);
+        
         //_inventorySlot.ClearSlot();
     }
 }

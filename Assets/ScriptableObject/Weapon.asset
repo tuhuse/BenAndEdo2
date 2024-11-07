@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemName: Weapon
   _itemID: 2
-  _icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  _icon: {fileID: 1693642311, guid: fda278a436291714f8f6265b118017fe, type: 3}
   _itemType: 1
   _isStackable: 1
   _description: "\u653B\u6483\u3060\u30DC\u30B1\t"
   _maxStack: 5
-  _inventory: {fileID: 0}
-  _inventorySlot: {fileID: 0}
