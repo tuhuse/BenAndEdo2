@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
-public class Item : ScriptableObject
+public abstract class Item : ScriptableObject
 {
     public enum ItemType
     {
@@ -27,11 +27,7 @@ public class Item : ScriptableObject
     public string Description => _description;
     public int MaxStack => _maxStack;
 
-   
 
-    public virtual void UseItem()
-    {
-        
-        //_inventorySlot.ClearSlot();
-    }
+
+    public abstract void UseItem();
 }

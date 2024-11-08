@@ -71,9 +71,10 @@ public class Inventory : MonoBehaviour
             Debug.Log("使用できるアイテムがありません");
             return;
         }
-
+        Item selectItem = _items[itemIndex];
+     
         // Assuming the Item class has a Use method
-        _items[itemIndex].UseItem();  // Execute the item's "Use" functionality
+        selectItem.UseItem();  // Execute the item's "Use" functionality
         Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
 
         RemoveItem(itemIndex); // Remove the item after using it
@@ -84,19 +85,19 @@ public class Inventory : MonoBehaviour
     }
 
     // インベントリの内容を表示するメソッド
-    public void DisplayInventory()
-    {
-        Debug.Log("インベントリの内容:");
-        for (int itemnumber = 0; itemnumber < _items.Length; itemnumber++)
-        {
-            if (_items[itemnumber] != null)
-            {
-                Debug.Log("スロット " + itemnumber + ": " + _items[itemnumber].MyItemName);
-            }
-            else
-            {
-                Debug.Log("スロット " + itemnumber + ": 空");
-            }
-        }
-    }
+    //public void DisplayInventory()
+    //{
+    //    Debug.Log("インベントリの内容:");
+    //    for (int itemnumber = 0; itemnumber < _items.Length; itemnumber++)
+    //    {
+    //        if (_items[itemnumber] != null)
+    //        {
+    //            Debug.Log("スロット " + itemnumber + ": " + _items[itemnumber].MyItemName);
+    //        }
+    //        else
+    //        {
+    //            Debug.Log("スロット " + itemnumber + ": 空");
+    //        }
+    //    }
+    //}
 }

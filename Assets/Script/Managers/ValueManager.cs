@@ -4,70 +4,97 @@ using UnityEngine;
 
 public class ValueManager : MonoBehaviour
 {
-    private const float MAXSPEED=10f;
-    private const float MAXDASHHP=100f;
-    private const float HEAL = 10;
+    // シングルトンのインスタンス
+    public static ValueManager Instance { get; private set; }
 
-    public float _moveSpeed { get; set; }
-    public float _dashHP;
-   
-    public int _playerHP { get; set; }
+    private const float MAX_SPEED = 10f;
+    private const float MAX_DASHHP = 100f;
+    private const float HEAL = 10;
+    private const int MAX_PLAYER_HP = 3;
+
+    public float MoveSpeed { get; private set; } = MAX_SPEED;
+    public float DashHP { get; private set; } = MAX_DASHHP;
+    public int PlayerHP { get; private set; } = MAX_PLAYER_HP;
+
     private Coroutine _dashRecoveryCoroutine;
-    // Start is called before the first frame update
+
+
+    // シングルトンの設定
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            //DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
-        _moveSpeed = 10f;
-        _dashHP = 100f;
-        _playerHP = 3;
-        
+       
     }
-   
-    
+
     private IEnumerator ReturnSpeed()
     {
-        _moveSpeed -= 10;
+        MoveSpeed -= 10;
         yield return new WaitForSeconds(3f);
-        _moveSpeed = MAXSPEED;
+        MoveSpeed = MAX_SPEED;
     }
+
     public void DashHPDecrease()
     {
-        _dashHP --;
+        DashHP = Mathf.Max(0, DashHP - 1); 
     }
-   public void StartDashRecovery()
+
+    public void StartDashRecovery()
     {
         if (_dashRecoveryCoroutine == null)
         {
             _dashRecoveryCoroutine = StartCoroutine(DashHealthRecovery());
         }
-        StartCoroutine(DashHealthRecovery());
-    }public void StopDashRecovery()
+    }
+
+    public void StopDashRecovery()
     {
         if (_dashRecoveryCoroutine != null)
         {
-             StopCoroutine(DashHealthRecovery());
-            _dashRecoveryCoroutine = null;  
+            StopCoroutine(_dashRecoveryCoroutine);
+            _dashRecoveryCoroutine = null;
         }
-       
     }
+
     private IEnumerator DashHealthRecovery()
     {
         int waitTime = 1;
-        while (_dashHP < MAXDASHHP)
+        while (DashHP < MAX_DASHHP)
         {
-            _dashHP +=HEAL; // 回復量を追加
-            _dashHP = Mathf.Min(_dashHP, MAXDASHHP); // 最大体力を超えないように制限
+            DashHP += HEAL;
+            DashHP = Mathf.Min(DashHP, MAX_DASHHP);
 
-            yield return new WaitForSeconds(waitTime); // 指定した間隔だけ待機
+            yield return new WaitForSeconds(waitTime);
         }
         _dashRecoveryCoroutine = null;
     }
+
     public void Damage()
-    {      
-            StartCoroutine(ReturnSpeed());
-            _playerHP--;
+    {
+        PlayerHP--;
+        StartCoroutine(ReturnSpeed());
+
     }
+
     public void Heal()
     {
-        _playerHP++;
+
+        if (PlayerHP < MAX_PLAYER_HP)
+        {
+            PlayerHP++;
+
+        }
+
     }
 }

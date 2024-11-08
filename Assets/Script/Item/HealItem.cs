@@ -1,18 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "HealItem", menuName = "Inventory/Item")]
+[CreateAssetMenu(fileName = "NewHealItem", menuName = "Inventory/HealItem")]
 public class HealItem : Item
 {
-    [SerializeField] private ValueManager _valueManager;
-    public int PlayerHP =>_valueManager._playerHP;
    
     public override void UseItem()
-    {
-        base.UseItem();
-        if (PlayerHP < 3)
-        {
-           _valueManager.Heal();
-        }
+    {  
+          ValueManager.Instance.Heal();
+        Debug.Log("‚¨‚ê‚¾");
     }
 }
