@@ -33,11 +33,6 @@ public class ValueManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-       
-    }
-
     private IEnumerator ReturnSpeed()
     {
         MoveSpeed -= 4;
