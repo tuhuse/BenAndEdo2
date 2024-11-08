@@ -6,8 +6,7 @@ public class HealItem : Item
 {
    
     public override void UseItem()
-    {  
-          ValueManager.Instance.Heal();
-        Debug.Log("‚¨‚ê‚¾");
+    {
+        ValueManager.Instance.Heal();
     }
 }

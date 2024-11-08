@@ -32,12 +32,13 @@ public class PlayerMoveController : MonoBehaviour
             _valueManager.DashHPDecrease();
             _valueManager.StopDashRecovery();
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift) || _valueManager.DashHP <= 0)
+        else
         {
             _isDash = false;
             _valueManager.StartDashRecovery();
         }
     }
+
 
     private void PlayerMove()
     {

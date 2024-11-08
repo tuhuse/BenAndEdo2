@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private Item[] _items;
-    private Sprite[] _itemIcon; 
     [SerializeField] private int _incentorySize=5;
    [SerializeField] private int _selectInventorynumber=0;
     [SerializeField] private InventoryUI _inventoryUI;

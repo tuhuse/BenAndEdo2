@@ -40,14 +40,15 @@ public class ValueManager : MonoBehaviour
 
     private IEnumerator ReturnSpeed()
     {
-        MoveSpeed -= 10;
+        MoveSpeed -= 4;
         yield return new WaitForSeconds(3f);
         MoveSpeed = MAX_SPEED;
     }
 
     public void DashHPDecrease()
     {
-        DashHP = Mathf.Max(0, DashHP - 1); 
+        DashHP = Mathf.Max(0, DashHP - 20*Time.deltaTime);
+        Debug.Log(DashHP);
     }
 
     public void StartDashRecovery()
@@ -70,6 +71,8 @@ public class ValueManager : MonoBehaviour
     private IEnumerator DashHealthRecovery()
     {
         int waitTime = 1;
+        int firstwaitTime = 2;
+        yield return new WaitForSeconds(firstwaitTime);
         while (DashHP < MAX_DASHHP)
         {
             DashHP += HEAL;
