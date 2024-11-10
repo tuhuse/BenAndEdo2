@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour
     private void Update()
     {
         SelectInventory();
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetMouseButtonDown(1))
         {
             Use(_selectInventorynumber);
         }
@@ -57,9 +57,13 @@ public class Inventory : MonoBehaviour
             return false;
         }
 
-        Debug.Log(_items[itemIndex].MyItemName + " をインベントリから削除しました。");
-        _inventoryUI.DeleteSlotImage(itemIndex, _items[itemIndex].MyIcon);
-        _items[itemIndex] = null;
+      
+   
+            Debug.Log(_items[itemIndex].MyItemName + " をインベントリから削除しました。");
+            _inventoryUI.DeleteSlotImage(itemIndex, _items[itemIndex].MyIcon);
+            _items[itemIndex] = null;
+
+            
         
         return true;
     }
@@ -71,32 +75,19 @@ public class Inventory : MonoBehaviour
             return;
         }
         Item selectItem = _items[itemIndex];
-     
-        // Assuming the Item class has a Use method
+
+        if (_items[itemIndex].MyItemName != "Light"&& _items[itemIndex].MyItemName != "KeyItem")
+        {
+            RemoveItem(itemIndex); // インベントリから削除
+        }
+        else
+        {
+             //削除しない
+        }
         selectItem.UseItem();  // Execute the item's "Use" functionality
         Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
 
-        RemoveItem(itemIndex); // Remove the item after using it
-    }
-    public Item[] GetItems()
-    {
-        return _items;
+       
     }
 
-    // インベントリの内容を表示するメソッド
-    //public void DisplayInventory()
-    //{
-    //    Debug.Log("インベントリの内容:");
-    //    for (int itemnumber = 0; itemnumber < _items.Length; itemnumber++)
-    //    {
-    //        if (_items[itemnumber] != null)
-    //        {
-    //            Debug.Log("スロット " + itemnumber + ": " + _items[itemnumber].MyItemName);
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("スロット " + itemnumber + ": 空");
-    //        }
-    //    }
-    //}
 }
