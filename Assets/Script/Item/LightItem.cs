@@ -1,35 +1,41 @@
 using UnityEngine;
-
+[CreateAssetMenu(fileName = "LightItem", menuName = "Inventory/LightItem")]
 public class LightItem : MonoBehaviour
 {
-    private Light flashlight;
-    public float batteryLife = 60f;  // バッテリー寿命（秒）
-
-    private bool isFlashlightOn = false;
+    private Light _flashlight;
+    public float _batteryLife = 60f;  // バッテリー寿命（秒）
+    public bool _LightOn = false;
+    private bool _isFlashlightOn = false;
 
     void Start()
     {
-        flashlight = GetComponentInChildren<Light>();
-        flashlight.enabled = false;
+        _flashlight = GetComponentInChildren<Light>();
+        _flashlight.enabled = false;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && batteryLife > 0)
+        if (_LightOn)
         {
-            isFlashlightOn = !isFlashlightOn;
-            flashlight.enabled = isFlashlightOn;
-        }
-
-        if (isFlashlightOn && batteryLife > 0)
-        {
-            batteryLife -= Time.deltaTime;  // バッテリー残量を減らす
-
-            if (batteryLife <= 0)
+            if (_batteryLife > 0)
             {
-                flashlight.enabled = false;  // バッテリーがなくなったらオフ
-                isFlashlightOn = false;
+                _isFlashlightOn = !_isFlashlightOn;
+                _flashlight.enabled = _isFlashlightOn;
+            }
+
+            if (_isFlashlightOn && _batteryLife > 0)
+            {
+                _batteryLife -= Time.deltaTime;  // バッテリー残量を減らす
+
+                if (_batteryLife <= 0)
+                {
+                    _flashlight.enabled = false;  // バッテリーがなくなったらオフ
+                    _isFlashlightOn = false;
+                }
             }
         }
     }
+       
+
+
 }

@@ -9,10 +9,12 @@ public class Inventory : MonoBehaviour
     [SerializeField] private int _incentorySize=5;
    [SerializeField] private int _selectInventorynumber=0;
     [SerializeField] private InventoryUI _inventoryUI;
+    private LightItem _lightItem;
     // Start is called before the first frame update
     void Start()
     {
         _items = new Item[_incentorySize];
+        _lightItem = GameObject.FindGameObjectWithTag("Player").GetComponent<LightItem>();
     }
     private void Update()
     {
@@ -76,16 +78,25 @@ public class Inventory : MonoBehaviour
         }
         Item selectItem = _items[itemIndex];
 
-        if (_items[itemIndex].MyItemName != "Light"&& _items[itemIndex].MyItemName != "KeyItem")
+        if (_items[itemIndex].MyItemName != "KeyItem"&& _items[itemIndex].MyItemName != "LightItem")
         {
             RemoveItem(itemIndex); // インベントリから削除
+            selectItem.UseItem();  // Execute the item's "Use" functionality
+            Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
         }
-        else
+        else if (_items[itemIndex].MyItemName=="LightItem")
         {
-             //削除しない
+            if (!_lightItem._LightOn)
+            {
+                _lightItem._LightOn = true;
+            }
+            else
+            {
+                _lightItem._LightOn = false;
+            }
         }
-        selectItem.UseItem();  // Execute the item's "Use" functionality
-        Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
+      
+       
 
        
     }

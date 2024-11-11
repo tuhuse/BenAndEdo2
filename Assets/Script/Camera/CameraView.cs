@@ -1,36 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 
 public class CameraView : MonoBehaviour
 {
     [SerializeField] private GameObject _cameraPosi;
     private Camera _camera;
-    [SerializeField] private float _mouseSensitivity = 100f; // マウス感度
-    [SerializeField] private Vector3 tpsOffset = new Vector3(0, 2, -4); // TPS視点のオフセット（後方に配置）
+    [SerializeField] private float _mouseSensitivity = 100f; // 適切なマウス感度に設定
+    [SerializeField] private Vector3 tpsOffset = new Vector3(0, 2, -4); // TPS視点のオフセット
+    [SerializeField] private float minVerticalAngle = -30f; // 下方向の角度制限
+    [SerializeField] private float maxVerticalAngle = 60f;  // 上方向の角度制限
 
     private bool _isFPS = false;
     private bool _isForward = false;
+    private float verticalRotation = 0f;
 
     private void Start()
     {
-        // カーソルをロックして画面中央に固定
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;  // カーソルをロック
         _camera = _cameraPosi.GetComponent<Camera>();
     }
 
     private void FixedUpdate()
     {
+        // X軸のマウス入力を取得し、プレイヤーを左右回転
         float xMouse = Input.GetAxis("Mouse X") * _mouseSensitivity;
         if (Mathf.Abs(xMouse) > 0)
         {
             transform.RotateAround(transform.position, Vector3.up, xMouse);
         }
-        //if (_isForward)
-        //{
-        //    Forward();
-        //}
+
+        if (_isForward)
+        {
+            Forward();
+        }
     }
 
     private void Update()
@@ -39,20 +42,24 @@ public class CameraView : MonoBehaviour
         {
             SwitchCamera();
         }
-        
     }
+
     private void Forward()
     {
-        if (Input.GetMouseButton(1))
-        {
-            float yMouse = Input.GetAxis("Mouse Y") * _mouseSensitivity;
-            if (Mathf.Abs(yMouse) > 0)
-            {
-                _cameraPosi.transform.RotateAround(transform.position, Vector3.right, yMouse);
-            }
-        }
+        // Y軸のマウス入力を取得してカメラを上下に回転
+        float yMouse = Input.GetAxis("Mouse Y") * _mouseSensitivity;
 
+        if (Mathf.Abs(yMouse) > 0)
+        {
+            // 縦回転の入力を現在の角度に加算し、角度制限を適用
+            verticalRotation -= yMouse;
+            verticalRotation = Mathf.Clamp(verticalRotation, minVerticalAngle, maxVerticalAngle);
+
+            // カメラの回転を制限された角度に更新
+            _cameraPosi.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+        }
     }
+
     private void SwitchCamera()
     {
         int playerLayer = 3;
