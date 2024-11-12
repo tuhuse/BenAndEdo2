@@ -78,22 +78,16 @@ public class Inventory : MonoBehaviour
         }
         Item selectItem = _items[itemIndex];
 
-        if (_items[itemIndex].MyItemName != "KeyItem"&& _items[itemIndex].MyItemName != "LightItem")
+        if (_items[itemIndex].MyItemName != "KeyItem"&& _items[itemIndex].MyItemName != "Light")
         {
+            
+            selectItem.UseItem(); 
             RemoveItem(itemIndex); // インベントリから削除
-            selectItem.UseItem();  // Execute the item's "Use" functionality
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
         }
-        else if (_items[itemIndex].MyItemName=="LightItem")
+        else if (_items[itemIndex].MyItemName=="Light")
         {
-            if (!_lightItem._LightOn)
-            {
-                _lightItem._LightOn = true;
-            }
-            else
-            {
-                _lightItem._LightOn = false;
-            }
+            selectItem.UseItem();
         }
       
        

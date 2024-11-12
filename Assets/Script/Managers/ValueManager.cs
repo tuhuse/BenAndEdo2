@@ -43,7 +43,7 @@ public class ValueManager : MonoBehaviour
     public void DashHPDecrease()
     {
         DashHP = Mathf.Max(0, DashHP - 20*Time.deltaTime);
-        Debug.Log(DashHP);
+        
     }
 
     public void StartDashRecovery()

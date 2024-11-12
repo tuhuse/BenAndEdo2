@@ -22,6 +22,7 @@ public class WorldItem : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.G))
             {
                 InventoryManager.Instance.AddItemToInventory(_itemData);
+               
                 Destroy(gameObject);  // アイテムをシーンから削除
             }
         }

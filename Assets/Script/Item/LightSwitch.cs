@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-[CreateAssetMenu(fileName = "LightBattery", menuName = "Inventory/LightBattery")]
-public class LightBattery : Item
+[CreateAssetMenu(fileName = "LightSwitch", menuName = "Inventory/LightSwitch")]
+public class LightSwitch : Item
 {
     private LightItem _lightItem;
-    private const int MAX_BatteryLife = 60;
+    // Start is called before the first frame update
     private void OnEnable()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -14,12 +13,22 @@ public class LightBattery : Item
         {
             _lightItem = player.GetComponent<LightItem>();
         }
+
+       
     }
+
     public override void UseItem()
     {
-        if (_lightItem._batteryLife <MAX_BatteryLife)
+       
+        if (!_lightItem._lightOn)
         {
-            _lightItem._batteryLife = MAX_BatteryLife;
+    
+            _lightItem.LightActive(true);
+        }
+        else
+        {
+           
+            _lightItem.LightActive(false);
         }
     }
 }
