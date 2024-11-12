@@ -77,13 +77,15 @@ public class Inventory : MonoBehaviour
 
         if (_items[itemIndex].MyItemName != "KeyItem"&& _items[itemIndex].MyItemName != "Light")
         {
+            Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
             selectItem.UseItem(); 
             RemoveItem(itemIndex); // インベントリから削除
-            Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
+           
         }
         else if (_items[itemIndex].MyItemName=="Light")
         {
             selectItem.UseItem();
+            print("ehehe");
         }
        
     }

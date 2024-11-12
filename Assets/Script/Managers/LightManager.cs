@@ -1,12 +1,28 @@
 using UnityEngine;
 
-public class LightItem : MonoBehaviour
+public class LightManager : MonoBehaviour
 {
+    public static LightManager Instance { get; private set; } 
     private const int MAX_BatteryLife = 60;
     [SerializeField] private Light _flashlight;
     [SerializeField]private float _batteryLife = 60f;  // バッテリー寿命（秒）
     public bool _lightOn { get; private set; }
 
+    private void Awake()
+    {
+        // シングルトンパターンの実装
+        if (Instance == null)
+        {
+            Instance = this;
+           
+        }
+        else
+        {
+            Destroy(gameObject);  // インスタンスが重複している場合、破棄する
+            return;
+        }
+
+    }
     void Start()
     {
         _flashlight.enabled = false;
@@ -41,7 +57,7 @@ public class LightItem : MonoBehaviour
     }
     private void LightStart()
     {
-        print("yorp");
+       
         if (_batteryLife > 0)
         {
 
