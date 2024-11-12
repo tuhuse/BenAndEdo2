@@ -18,25 +18,28 @@ public class LightItem : MonoBehaviour
         {
             LightStart();
         }
-
     }
     public void LightActive(bool juge)
     {
         if (juge)
         {
             _lightOn = true;
-
+            if (_batteryLife > 0)
+            {
+                _flashlight.enabled = true;
+            }
         }
         else
         {
+            _flashlight.enabled = false;
             _lightOn = false;
-
 
         }
 
     }
     private void LightStart()
     {
+
         if (_batteryLife > 0)
         {
 
@@ -51,6 +54,7 @@ public class LightItem : MonoBehaviour
             {
                 _flashlight.enabled = false;  // バッテリーがなくなったらオフ
                 _lightOn = false;
+
 
             }
         }

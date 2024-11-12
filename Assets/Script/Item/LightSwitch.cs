@@ -5,7 +5,7 @@ using UnityEngine;
 public class LightSwitch : Item
 {
     private LightItem _lightItem;
-    // Start is called before the first frame update
+    private bool _lightOn => _lightItem._lightOn;    // Start is called before the first frame update
     private void OnEnable()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -13,7 +13,6 @@ public class LightSwitch : Item
         {
             _lightItem = player.GetComponent<LightItem>();
         }
-
        
     }
 
