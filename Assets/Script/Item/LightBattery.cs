@@ -6,20 +6,14 @@ using UnityEngine;
 public class LightBattery : Item
 {
     private LightItem _lightItem;
-    private const int MAX_BatteryLife = 60;
-    private void OnEnable()
+  
+    private  void Start()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            _lightItem = player.GetComponent<LightItem>();
-        }
+            _lightItem =GameObject.FindGameObjectWithTag("Player").GetComponent<LightItem>();
+        
     }
     public override void UseItem()
     {
-        if (_lightItem._batteryLife <MAX_BatteryLife)
-        {
-            _lightItem._batteryLife = MAX_BatteryLife;
-        }
+        _lightItem.GetBattery();
     }
 }

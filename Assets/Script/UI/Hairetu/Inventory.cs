@@ -9,12 +9,12 @@ public class Inventory : MonoBehaviour
     [SerializeField] private int _incentorySize=5;
    [SerializeField] private int _selectInventorynumber=0;
     [SerializeField] private InventoryUI _inventoryUI;
-    private LightItem _lightItem;
+   
     // Start is called before the first frame update
     void Start()
     {
         _items = new Item[_incentorySize];
-        _lightItem = GameObject.FindGameObjectWithTag("Player").GetComponent<LightItem>();
+        
     }
     private void Update()
     {
@@ -23,6 +23,7 @@ public class Inventory : MonoBehaviour
         {
             Use(_selectInventorynumber);
         }
+
     }
     private void SelectInventory()
     {
@@ -59,14 +60,10 @@ public class Inventory : MonoBehaviour
             return false;
         }
 
-      
-   
             Debug.Log(_items[itemIndex].MyItemName + " をインベントリから削除しました。");
             _inventoryUI.DeleteSlotImage(itemIndex, _items[itemIndex].MyIcon);
             _items[itemIndex] = null;
 
-            
-        
         return true;
     }
     public void Use(int itemIndex)
@@ -80,7 +77,6 @@ public class Inventory : MonoBehaviour
 
         if (_items[itemIndex].MyItemName != "KeyItem"&& _items[itemIndex].MyItemName != "Light")
         {
-            
             selectItem.UseItem(); 
             RemoveItem(itemIndex); // インベントリから削除
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
@@ -89,9 +85,6 @@ public class Inventory : MonoBehaviour
         {
             selectItem.UseItem();
         }
-      
-       
-
        
     }
 

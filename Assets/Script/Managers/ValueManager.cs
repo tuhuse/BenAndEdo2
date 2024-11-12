@@ -90,6 +90,7 @@ public class ValueManager : MonoBehaviour
 
         if (PlayerHP < MAX_PLAYER_HP)
         {
+            
             PlayerHP++;
 
         }

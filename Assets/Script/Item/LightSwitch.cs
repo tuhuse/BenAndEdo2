@@ -5,7 +5,6 @@ using UnityEngine;
 public class LightSwitch : Item
 {
     private LightItem _lightItem;
-    private bool _lightOn => _lightItem._lightOn;    // Start is called before the first frame update
     private void OnEnable()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -18,16 +17,6 @@ public class LightSwitch : Item
 
     public override void UseItem()
     {
-       
-        if (!_lightItem._lightOn)
-        {
-    
-            _lightItem.LightActive(true);
-        }
-        else
-        {
-           
-            _lightItem.LightActive(false);
-        }
+        _lightItem.LightActive();
     }
 }

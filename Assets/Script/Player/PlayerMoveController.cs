@@ -58,7 +58,7 @@ public class PlayerMoveController : MonoBehaviour
         float speed = _valueManager.MoveSpeed * (_isDash ? dashMultiplier : 1f);
         moveDirection = moveDirection.normalized * speed * Time.deltaTime;
 
-        // Rigidbodyを使って移動させる（MovePositionを使用）
+        
         _rb.MovePosition(transform.position + moveDirection);
     }
 
@@ -67,7 +67,7 @@ public class PlayerMoveController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             _valueManager.Damage();
-            print(_valueManager.PlayerHP);
+            
         }
     }
 }
