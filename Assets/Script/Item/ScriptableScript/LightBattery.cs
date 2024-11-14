@@ -8,7 +8,7 @@ public class LightBattery : Item
 
     public override void UseItem()
     {        
-            LightManager.Instance.GetBattery();
+            ItemManager.Instance.GetBattery();
         
     }
 }

@@ -5,6 +5,6 @@ public class LightSwitch : Item
  
     public override void UseItem()
     {
-       LightManager.Instance.LightActive();
+       ItemManager.Instance.LightActive();
     }
 }

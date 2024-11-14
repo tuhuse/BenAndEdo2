@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMoveController : MonoBehaviour
 {
-    [SerializeField] private float dashMultiplier = 2f; 
+    [SerializeField] private float _dashMultiplier = 2f; 
     private bool _isDash = false;
     private ValueManager _valueManager;
     private Rigidbody _rb;
@@ -55,7 +55,7 @@ public class PlayerMoveController : MonoBehaviour
             moveDirection -= transform.forward;
 
         // ƒ_ƒbƒVƒ…
-        float speed = _valueManager.MoveSpeed * (_isDash ? dashMultiplier : 1f);
+        float speed = _valueManager.MoveSpeed * (_isDash ? _dashMultiplier : 1f);
         moveDirection = moveDirection.normalized * speed * Time.deltaTime;
 
         
