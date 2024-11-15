@@ -4,7 +4,7 @@ public class ItemManager : MonoBehaviour
 {
     //懐中電灯
     public static ItemManager Instance { get; private set; }
-    private const int MAX_BatteryLife = 60;
+    private const int MAX_Battery_Life = 60;
     [SerializeField] private Light _flashlight;
     [SerializeField] private float _batteryLife = 60f;  // バッテリー寿命（秒）
     public bool LightOn { get; private set; }
@@ -90,9 +90,9 @@ public class ItemManager : MonoBehaviour
     }
     public void GetBattery()
     {
-        if (_batteryLife < MAX_BatteryLife)
+        if (_batteryLife < MAX_Battery_Life)
         {
-            _batteryLife = MAX_BatteryLife;
+            _batteryLife = MAX_Battery_Life;
         }
     }
     #endregion
