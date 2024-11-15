@@ -48,6 +48,9 @@ public class Inventory : MonoBehaviour
                 //_itemIcon[itemnumber] = newItem.MyIcon;
                 Debug.Log(newItem.MyItemName + " をインベントリに追加しました。");
                 return true;
+            }else if (newItem.MyItemName == _items[itemnumber].MyItemName)
+            {
+                
             }
         }
         Debug.Log("満タンです");
@@ -85,9 +88,17 @@ public class Inventory : MonoBehaviour
         else if (_items[itemIndex].MyItemName=="Light")
         {
             selectItem.UseItem();
-            print("ehehe");
+        }else if (_items[itemIndex].MyItemName == "KeyItem")
+        {
+
         }
        
     }
+    private void KeyUse()
+    {
+        if (ItemManager.Instance.KeyCount <= 3)
+        {
 
+        }
+    }
 }

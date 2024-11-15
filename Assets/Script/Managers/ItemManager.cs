@@ -7,13 +7,13 @@ public class ItemManager : MonoBehaviour
     private const int MAX_BatteryLife = 60;
     [SerializeField] private Light _flashlight;
     [SerializeField] private float _batteryLife = 60f;  // バッテリー寿命（秒）
-    public bool _lightOn { get; private set; }
+    public bool LightOn { get; private set; }
 
     //攻撃アイテム
     [SerializeField] private BoxCollider _weapon;
 
     //鍵的な奴
-    private int _keyCount = 0;
+    public int KeyCount { get; private set; }
     [SerializeField]
     private GameObject _perfectKey;
     [SerializeField]
@@ -41,7 +41,7 @@ public class ItemManager : MonoBehaviour
     void Update()
     {
 
-        if (_lightOn)
+        if (LightOn)
         {
             LightStart();
 
@@ -52,9 +52,9 @@ public class ItemManager : MonoBehaviour
     #region 懐中電灯処理
     public void LightActive()
     {
-        if (!_lightOn)
+        if (!LightOn)
         {
-            _lightOn = true;
+            LightOn = true;
             if (_batteryLife > 0)
             {
                 _flashlight.enabled = true;
@@ -63,7 +63,7 @@ public class ItemManager : MonoBehaviour
         else
         {
             _flashlight.enabled = false;
-            _lightOn = false;
+            LightOn = false;
         }
     }
     private void LightStart()
@@ -82,7 +82,7 @@ public class ItemManager : MonoBehaviour
             if (_batteryLife <= 0)
             {
                 _flashlight.enabled = false;  // バッテリーがなくなったらオフ
-                _lightOn = false;
+                LightOn = false;
 
 
             }
@@ -108,9 +108,9 @@ public class ItemManager : MonoBehaviour
         StartCoroutine(WeaponAttack());
     }
     #endregion
-    public void KeyCount()
+    public void KeyCountPlus()
     {
-        if (_keyCount == 3)
+        if (KeyCount == 3)
         {
             _perfectKey = Instantiate(_unionKey, _perfectKey.transform.position, Quaternion.identity);
         }
