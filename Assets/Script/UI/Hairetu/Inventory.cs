@@ -6,37 +6,53 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private Item[] _items;
-    [SerializeField] private int _incentorySize = 5;
-    [SerializeField] private int _selectInventorynumber = 0;
+    [SerializeField] private int _inventorySize = 5;
+    [SerializeField] private int _selectInventoryNumber = 0;
     [SerializeField] private InventoryUI _inventoryUI;
     private const int Min_Item = 1;
-    private const int Max_Item = 3;
     private int _healCnt;
     private int _weaponCnt;
     private int _lightBatteryCnt;
+
+    private bool _isUse = true;
     public int KeyCnt { get; private set; }
     // Start is called before the first frame update
     void Start()
     {
-        _items = new Item[_incentorySize];
+        _items = new Item[_inventorySize];
 
     }
     private void Update()
     {
         SelectInventory();
-        if (Input.GetMouseButtonDown(1))
-        {
-            Use(_selectInventorynumber);
-        }
+        UseClick();
 
+    }
+    private void UseClick()
+    {
+       
+            if (Input.GetMouseButtonDown(1)&& _isUse)
+            {
+                UseItem(_selectInventoryNumber);
+            
+                
+            }
+        
+    }
+    private IEnumerator UseCoolTime()
+    {
+        int waitTime = 3;
+        _isUse = false;
+        yield return new WaitForSeconds(waitTime);
+        _isUse = true;
     }
     private void SelectInventory()
     {
-        for (int addnumber = 0; addnumber < _incentorySize; addnumber++)
+        for (int addnumber = 0; addnumber < _inventorySize; addnumber++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + addnumber))
             {
-                _selectInventorynumber = addnumber;
+                _selectInventoryNumber = addnumber;
                 break;
             }
         }
@@ -44,24 +60,35 @@ public class Inventory : MonoBehaviour
 
     public bool AddItem(Item newItem)
     {
-        for (int itemnumber = 0; itemnumber < _items.Length; itemnumber++)
+        // インベントリ内の既存アイテムと一致するか確認
+        for (int itemNumber = 0; itemNumber < _items.Length; itemNumber++)
         {
-            if (_items[itemnumber] == null)
+            if (_items[itemNumber] != null && newItem.MyItemName == _items[itemNumber].MyItemName && newItem.IsStackable)
             {
-                _items[itemnumber] = newItem;
-                _inventoryUI.UpdateSlotImage(itemnumber, newItem.MyIcon);
-                //_itemIcon[itemnumber] = newItem.MyIcon;
+                // スタック可能ならスタックを増加
+                AddStack(newItem,itemNumber);
+                Debug.Log(newItem.MyItemName + " のスタック数を増加しました。");
+                return true;
+            }
+        }
+
+        // 空きスロットを探して新しいアイテムを追加
+        for (int itemNumber = 0; itemNumber < _items.Length; itemNumber++)
+        {
+            if (_items[itemNumber] == null)
+            {
+                _items[itemNumber] = newItem;
+                _inventoryUI.UpdateSlotImage(itemNumber, newItem.MyIcon);
+                AddStack(newItem, itemNumber); // スタック数も初期化
                 Debug.Log(newItem.MyItemName + " をインベントリに追加しました。");
                 return true;
             }
-            else if (newItem.MyItemName == _items[itemnumber].MyItemName&&newItem.IsStackable)
-            {
-                AddStack(newItem);
-            }
         }
-        Debug.Log("満タンです");
+
+        Debug.Log("インベントリが満タンです");
         return false;
     }
+
     public bool RemoveItem(int itemIndex)
     {
         if (itemIndex < 0 || itemIndex >= _items.Length || _items[itemIndex] == null)
@@ -76,7 +103,7 @@ public class Inventory : MonoBehaviour
 
         return true;
     }
-    public void Use(int itemIndex)
+    public void UseItem(int itemIndex)
     {
         if (itemIndex < 0 || itemIndex >= _items.Length || _items[itemIndex] == null)
         {
@@ -89,7 +116,7 @@ public class Inventory : MonoBehaviour
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
             DecreaseStack(_items[itemIndex],itemIndex);
             selectItem.UseItem();
-            
+            StartCoroutine(UseCoolTime());
         }
         else if (_items[itemIndex].MyItemName == "Light")
         {
@@ -101,20 +128,23 @@ public class Inventory : MonoBehaviour
         }
 
     }
-    private void AddStack(Item item)
+    private void AddStack(Item item, int itemIndex)
     {
         switch (item.MyItemID)
         {
             case 1:
                 if (item.MaxStack > _weaponCnt)
                 {
+                   
                     _weaponCnt++;
+                    _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
             case 2:
                 if (item.MaxStack > _lightBatteryCnt)
                 {
                     _lightBatteryCnt++;
+                    _inventoryUI.UpdateSlotText(itemIndex);
                 }
                
                 break;
@@ -123,19 +153,18 @@ public class Inventory : MonoBehaviour
                 if (item.MaxStack > _healCnt)
                 {
                     _healCnt++;
+                    _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
             case 4:
                 if (item.MaxStack > KeyCnt)
                 {
                     KeyCnt++;
-                }else if (item.MaxStack == KeyCnt)
-                {
-
+                    _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
         }
-
+        
 
     }
     private void DecreaseStack(Item item,int deleteItem)
@@ -143,18 +172,18 @@ public class Inventory : MonoBehaviour
         switch (item.MyItemID)
         {
             case 1:
-                if (_weaponCnt > 2&&_weaponCnt==Max_Item)
+                if (_weaponCnt <= item.MaxStack && _weaponCnt>Min_Item)
                 {
                     _weaponCnt--;
-                    
-                }else if (_weaponCnt == Min_Item)
+
+                } else if (_weaponCnt == Min_Item)
                 {
                     _weaponCnt--;
                     RemoveItem(deleteItem);
                 }
                 break;
             case 2:
-                if (_lightBatteryCnt > 2 &&_lightBatteryCnt == Max_Item)
+                if (_lightBatteryCnt <= item.MaxStack && _lightBatteryCnt > Min_Item)
                 {
                     _lightBatteryCnt--;
                 }
@@ -165,7 +194,7 @@ public class Inventory : MonoBehaviour
                 }
                 break;
             case 3:
-                if (_healCnt > 2 && _healCnt == Max_Item)
+                if (_healCnt <= item.MaxStack && _healCnt > Min_Item)
                 {
                     _healCnt--;
                 }
@@ -175,15 +204,16 @@ public class Inventory : MonoBehaviour
                     RemoveItem(deleteItem);
                 }
                 break;
-         
+            case 4:
+                if (KeyCnt == item.MaxStack)
+                {
+                    RemoveItem(deleteItem);
+                    UseItem(deleteItem);
+                }
+                break;
+               
         }
-       
+        _inventoryUI.DeleteSlotText(deleteItem);
     }
-    private void KeyUse()
-    {
-        if (ItemManager.Instance.KeyCount <= 3)
-        {
 
-        }
-    }
 }
