@@ -24,6 +24,9 @@ public class InventoryManager : MonoBehaviour
     private int _weaponCnt;
     private int _lightBatteryCnt;
     private bool _isUse = true; // アイテムを使用可能かどうか
+    /// <summary>
+    /// プロパティ
+    /// </summary>
     public int KeyCount { get; private set; } // キーアイテムのカウント
 
     private void Awake()
@@ -53,15 +56,20 @@ public class InventoryManager : MonoBehaviour
         UseClick();
     }
 
+    /// <summary>
+    /// アイテムを使う
+    /// </summary>
     private void UseClick()
     {
-        // 右クリックでアイテムを使用
+      
         if (Input.GetMouseButtonDown(1) && _isUse)
         {
             UseItem(_selectInventoryNumber);
         }
     }
-
+    /// <summary>
+    /// クールタイム
+    /// </summary>
     private IEnumerator UseCoolTime()
     {
         // アイテム使用のクールタイム処理
@@ -70,10 +78,12 @@ public class InventoryManager : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         _isUse = true;
     }
-
+    /// <summary>
+    /// インベントリ選択番号の更新
+    /// </summary>
     private void SelectInventory()
     {
-        // 数字キー（1〜5）でインベントリスロットを選択
+       
         for (int addnumber = 0; addnumber < _inventorySize; addnumber++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + addnumber))
@@ -83,7 +93,11 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// アイテムを追加する処理
+    /// </summary>
+    /// <param name="newItem"></param>
+    /// <returns></returns>
     public bool AddItem(Item newItem)
     {
         // インベントリ内の既存アイテムと一致するか確認
@@ -114,7 +128,11 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("インベントリが満タンです");
         return false;
     }
-
+    /// <summary>
+    /// アイテムをインベントリから消す処理
+    /// </summary>
+    /// <param name="itemIndex"></param>
+    /// <returns></returns>
     public bool RemoveItem(int itemIndex)
     {
         // 指定スロットからアイテムを削除
@@ -130,10 +148,13 @@ public class InventoryManager : MonoBehaviour
 
         return true;
     }
-
+    /// <summary>
+    /// アイテムを使用時の効果とインベントリの処理
+    /// </summary>
+    /// <param name="itemIndex"></param>
     public void UseItem(int itemIndex)
     {
-        // アイテム使用処理
+        
         if (itemIndex < 0 || itemIndex >= _items.Length || _items[itemIndex] == null)
         {
             Debug.Log("使用できるアイテムがありません");
@@ -142,7 +163,7 @@ public class InventoryManager : MonoBehaviour
 
         Item selectItem = _items[itemIndex];
 
-        // 特定のアイテムはスタックを減らして使用
+       
         if (_items[itemIndex].MyItemName != "KeyItem" && _items[itemIndex].MyItemName != "Light")
         {
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
@@ -160,7 +181,11 @@ public class InventoryManager : MonoBehaviour
             // 特定アイテム（KeyItem）の使用
         }
     }
-
+    /// <summary>
+    /// ストックできるアイテムの時
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="itemIndex"></param>
     private void AddStack(Item item, int itemIndex)
     {
         // アイテムスタック数を増加
@@ -196,7 +221,11 @@ public class InventoryManager : MonoBehaviour
                 break;
         }
     }
-
+    /// <summary>
+    /// ストックできるアイテムを使った時
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="deleteItem"></param>
     private void DecreaseStack(Item item, int deleteItem)
     {
         // アイテムスタック数を減少、スタックが0ならアイテム削除

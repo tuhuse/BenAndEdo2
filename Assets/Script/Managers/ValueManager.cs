@@ -38,7 +38,10 @@ public class ValueManager : MonoBehaviour
         }
     }
 
-    // 一定時間後に移動速度を元に戻す処理
+    /// <summary>
+    /// 一定時間でスピードを戻す
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ReturnSpeed()
     {
         MoveSpeed -= SPEED_DECREASE_AMOUNT; // 移動速度を減少
@@ -46,13 +49,17 @@ public class ValueManager : MonoBehaviour
         MoveSpeed = MAX_SPEED;
     }
 
-    // ダッシュ時にHPを減少させる処理
+    /// <summary>
+    ///  ダッシュ時にHPを減少させる処理
+    /// </summary>
     public void DashHPDecrease()
     {
         DashHP = Mathf.Max(0, DashHP - STAMINA_DECREASE_RATE * Time.deltaTime); // HPが0を下回らないようにする
     }
 
-    // ダッシュHPの回復処理を開始
+    /// <summary>
+    /// ダッシュHPの回復処理を開始
+    /// </summary>    
     public void StartDashRecovery()
     {
         if (_dashRecoveryCoroutine == null)
@@ -61,7 +68,9 @@ public class ValueManager : MonoBehaviour
         }
     }
 
-    // ダッシュHPの回復処理を停止
+    /// <summary>
+    /// ダッシュHPの回復処理を停止
+    /// </summary>
     public void StopDashRecovery()
     {
         if (_dashRecoveryCoroutine != null)
@@ -71,7 +80,10 @@ public class ValueManager : MonoBehaviour
         }
     }
 
-    // ダッシュHPの回復処理
+    /// <summary>
+    ///  ダッシュHPの回復処理
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DashHealthRecovery()
     {
         yield return new WaitForSeconds(STAMINA_RECOVERY_INITIAL_DELAY); // 回復開始までの遅延
@@ -85,14 +97,18 @@ public class ValueManager : MonoBehaviour
         _dashRecoveryCoroutine = null; // 回復処理が完了したらコルーチンをリセット
     }
 
-    // プレイヤーがダメージを受けた時の処理
+    /// <summary>
+    ///  プレイヤーがダメージを受けた時の処理
+    /// </summary>
     public void Damage()
     {
         PlayerHP--; // プレイヤーHPを減少
         StartCoroutine(ReturnSpeed()); // 一時的に移動速度を減少
     }
 
-    // プレイヤーを回復させる処理
+    /// <summary>
+    ///  プレイヤーを回復させる処理
+    /// </summary>
     public void Heal()
     {
         PlayerHP = Mathf.Min(PlayerHP + 1, MAX_PLAYER_HP); // HPを最大値まで回復

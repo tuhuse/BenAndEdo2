@@ -51,9 +51,11 @@ public class ItemManager : MonoBehaviour
     }
 
     #region 懐中電灯処理
+    /// <summary>
+    /// 懐中電灯のオンオフ切り替え
+    /// </summary>
     public void LightActive()
     {
-        // 懐中電灯のオンオフ切り替え
         if (!LightOn)
         {
             LightOn = true;
@@ -68,10 +70,11 @@ public class ItemManager : MonoBehaviour
             LightOn = false;
         }
     }
-
+    /// <summary>
+    /// 懐中電灯のバッテリー消費処理
+    /// </summary>
     private void UpdateLight()
     {
-        // 懐中電灯のバッテリー消費処理
         if (_batteryLife > 0)
         {
             if (!_flashLight.enabled)
@@ -88,10 +91,12 @@ public class ItemManager : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// 電池を使用したときバッテリー回復
+    /// </summary>
     public void GetBattery()
     {
-        // バッテリーアイテムを取得してバッテリー寿命を回復
+       
         if (_batteryLife < MAX_BATTERY_LIFE)
         {
             _batteryLife = MAX_BATTERY_LIFE;
@@ -100,6 +105,10 @@ public class ItemManager : MonoBehaviour
     #endregion
 
     #region 攻撃アイテム処理
+    /// <summary>
+    /// 攻撃処理
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WeaponAttack()
     {
         // 武器攻撃の処理（一定時間コライダーを有効化）
@@ -107,7 +116,9 @@ public class ItemManager : MonoBehaviour
         yield return new WaitForSeconds(1f); // 1秒後に無効化
         _weaponCollider.enabled = false;
     }
-
+    /// <summary>
+    /// 攻撃合図
+    /// </summary>
     public void WeaponStart()
     {
         // 武器攻撃の開始
