@@ -8,6 +8,7 @@ TagManager:
   - Yaiba
   - Enemy
   - Weapon
+  - Inventory
   layers:
   - Default
   - TransparentFX

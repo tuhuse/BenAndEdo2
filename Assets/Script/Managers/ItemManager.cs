@@ -5,7 +5,6 @@ public class ItemManager : MonoBehaviour
     //懐中電灯
     public static ItemManager Instance { get; private set; }
 
-    [SerializeField] private Inventory _inventory;
     private const int MAX_Battery_Life = 60;
     [SerializeField] private Light _flashlight;
     [SerializeField] private float _batteryLife = 60f;  // バッテリー寿命（秒）
@@ -111,7 +110,7 @@ public class ItemManager : MonoBehaviour
     #endregion
     public void KeyCountPlus()
     {
-        if (_inventory.KeyCnt == 3)
+        if (InventoryManager.Instance.KeyCnt == 3)
         {
             _perfectKey = Instantiate(_unionKey, _perfectKey.transform.position, Quaternion.identity);
         }
