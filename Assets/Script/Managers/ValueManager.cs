@@ -7,20 +7,22 @@ public class ValueManager : MonoBehaviour
     public static ValueManager Instance { get; private set; }
 
     // 定数定義
-    private const float MAX_SPEED = 10f;
-    private const float MAX_DASHHP = 100f;
-    private const float HEAL = 10f;
-    private const int MAX_PLAYER_HP = 3;
-    private const int DASH_HP_DECREASE_RATE = 20;
-    private const int DASH_RECOVERY_WAIT_TIME = 1;
-    private const int DASH_RECOVERY_INITIAL_DELAY = 2;
-    private const float SPEED_DECREASE_AMOUNT = 4f;
+    private const float MAX_SPEED = 10f; // 最大移動速度
+    private const float MAX_DASH_HP = 100f; // ダッシュ用のHPの最大値
+    private const float STAMINA_HEAL = 10f; // ダッシュHPの回復量
+    private const int MAX_PLAYER_HP = 3; // プレイヤーの最大HP
+    private const int STAMINA_DECREASE_RATE = 20; // ダッシュ時のHP減少速度
+    private const int STAMINA_RECOVERY_WAIT_TIME = 1; // ダッシュHP回復の間隔
+    private const int STAMINA_RECOVERY_INITIAL_DELAY = 2; // ダッシュHP回復開始までの遅延
+    private const int RETERN_SPEED = 3;
+    private const float SPEED_DECREASE_AMOUNT = 4f; // ダメージ時の移動速度減少量
 
-    public float MoveSpeed { get; private set; } = MAX_SPEED;
-    public float DashHP { get; private set; } = MAX_DASHHP;
-    public int PlayerHP { get; private set; } = MAX_PLAYER_HP;
+    // プレイヤーの現在の状態
+    public float MoveSpeed { get; private set; } = MAX_SPEED; // 現在の移動速度
+    public float DashHP { get; private set; } = MAX_DASH_HP; // 現在のダッシュHP
+    public int PlayerHP { get; private set; } = MAX_PLAYER_HP; // 現在のプレイヤーHP
 
-    private Coroutine _dashRecoveryCoroutine;
+    private Coroutine _dashRecoveryCoroutine; // ダッシュHP回復のコルーチン管理用
 
     // シングルトンの設定
     private void Awake()
@@ -28,26 +30,29 @@ public class ValueManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // シーン間で破棄されないようにする
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // 重複するインスタンスを破棄
         }
     }
 
+    // 一定時間後に移動速度を元に戻す処理
     private IEnumerator ReturnSpeed()
     {
-        MoveSpeed -= SPEED_DECREASE_AMOUNT;
-        yield return new WaitForSeconds(3f);
+        MoveSpeed -= SPEED_DECREASE_AMOUNT; // 移動速度を減少
+        yield return new WaitForSeconds(RETERN_SPEED); // 3秒後に元に戻す
         MoveSpeed = MAX_SPEED;
     }
 
+    // ダッシュ時にHPを減少させる処理
     public void DashHPDecrease()
     {
-        DashHP = Mathf.Max(0, DashHP - DASH_HP_DECREASE_RATE * Time.deltaTime);
+        DashHP = Mathf.Max(0, DashHP - STAMINA_DECREASE_RATE * Time.deltaTime); // HPが0を下回らないようにする
     }
 
+    // ダッシュHPの回復処理を開始
     public void StartDashRecovery()
     {
         if (_dashRecoveryCoroutine == null)
@@ -56,6 +61,7 @@ public class ValueManager : MonoBehaviour
         }
     }
 
+    // ダッシュHPの回復処理を停止
     public void StopDashRecovery()
     {
         if (_dashRecoveryCoroutine != null)
@@ -65,25 +71,30 @@ public class ValueManager : MonoBehaviour
         }
     }
 
+    // ダッシュHPの回復処理
     private IEnumerator DashHealthRecovery()
     {
-        yield return new WaitForSeconds(DASH_RECOVERY_INITIAL_DELAY);
-        while (DashHP < MAX_DASHHP)
+        yield return new WaitForSeconds(STAMINA_RECOVERY_INITIAL_DELAY); // 回復開始までの遅延
+
+        while (DashHP < MAX_DASH_HP)
         {
-            DashHP = Mathf.Min(DashHP + HEAL, MAX_DASHHP);
-            yield return new WaitForSeconds(DASH_RECOVERY_WAIT_TIME);
+            DashHP = Mathf.Min(DashHP + STAMINA_HEAL, MAX_DASH_HP); // HPを最大値まで回復
+            yield return new WaitForSeconds(STAMINA_RECOVERY_WAIT_TIME); // 指定の間隔で回復
         }
-        _dashRecoveryCoroutine = null;
+
+        _dashRecoveryCoroutine = null; // 回復処理が完了したらコルーチンをリセット
     }
 
+    // プレイヤーがダメージを受けた時の処理
     public void Damage()
     {
-        PlayerHP--;
-        StartCoroutine(ReturnSpeed());
+        PlayerHP--; // プレイヤーHPを減少
+        StartCoroutine(ReturnSpeed()); // 一時的に移動速度を減少
     }
 
+    // プレイヤーを回復させる処理
     public void Heal()
     {
-        PlayerHP = Mathf.Min(PlayerHP + 1, MAX_PLAYER_HP);
+        PlayerHP = Mathf.Min(PlayerHP + 1, MAX_PLAYER_HP); // HPを最大値まで回復
     }
 }
