@@ -7,11 +7,11 @@ public class CameraView : MonoBehaviour
     [SerializeField] private GameObject _cameraPosi;
     private Camera _camera;
     [SerializeField] private float _mouseSensitivity = 100f; // 適切なマウス感度に設定
-    [SerializeField] private Vector3 tpsOffset = new Vector3(0, 2, -4); // TPS視点のオフセット
+    [SerializeField] private Vector3 tpsOffset = new Vector3(0, 3, -3); // TPS視点のオフセット
     [SerializeField] private float minVerticalAngle = -30f; // 下方向の角度制限
     [SerializeField] private float maxVerticalAngle = 60f;  // 上方向の角度制限
 
-    private bool _isFPS = false;
+    private bool _isFPS = true;
     private bool _isForward = false;
     private float verticalRotation = 0f;
 
