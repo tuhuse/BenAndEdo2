@@ -3,7 +3,7 @@ using UnityEngine;
 public class LightSwitch : Item
 {
  
-    public override void UseItem()
+    public override void ItemEffect()
     {
        ItemManager.Instance.LightActive();
     }

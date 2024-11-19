@@ -24,7 +24,7 @@ public class CameraView : MonoBehaviour
     private void FixedUpdate()
     {
         // X軸のマウス入力を取得し、プレイヤーを左右回転
-        float xMouse = Input.GetAxis("Mouse X") * _mouseSensitivity;
+        float xMouse = Input.GetAxis("Mouse X") * _mouseSensitivity*Time.deltaTime;
         if (Mathf.Abs(xMouse) > 0)
         {
             transform.RotateAround(transform.position, Vector3.up, xMouse);
@@ -47,7 +47,7 @@ public class CameraView : MonoBehaviour
     private void Forward()
     {
         // Y軸のマウス入力を取得してカメラを上下に回転
-        float yMouse = Input.GetAxis("Mouse Y") * _mouseSensitivity;
+        float yMouse = Input.GetAxis("Mouse Y") * _mouseSensitivity * Time.deltaTime;
 
         if (Mathf.Abs(yMouse) > 0)
         {

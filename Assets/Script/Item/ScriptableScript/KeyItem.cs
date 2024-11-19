@@ -5,8 +5,8 @@ using UnityEngine;
 public class KeyItem : Item
 {
     
-    public override void UseItem()
+    public override void ItemEffect()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

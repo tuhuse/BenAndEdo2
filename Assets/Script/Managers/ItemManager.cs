@@ -11,10 +11,7 @@ public class ItemManager : MonoBehaviour
 
     // 鍵アイテム関連
     [SerializeField]
-    private GameObject _perfectKey; // 完成した鍵
-    [SerializeField]
-    private GameObject _unionKey; // 鍵のパーツ
-
+    private Item _completedKey;
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
     [SerializeField] private Light _flashLight; // 懐中電灯のライト
@@ -126,12 +123,8 @@ public class ItemManager : MonoBehaviour
     }
     #endregion
 
-    public void KeyCountPlus()
+    public void KeyInstantiate()
     {
-        // 鍵パーツが揃った場合に完成した鍵を生成
-        if (InventoryManager.Instance.KeyCount == 3)
-        {
-            _perfectKey = Instantiate(_unionKey, _perfectKey.transform.position, Quaternion.identity);
-        }
+        InventoryManager.Instance.AddItem(_completedKey);
     }
 }

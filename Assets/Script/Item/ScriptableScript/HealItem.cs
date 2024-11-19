@@ -5,7 +5,7 @@ using UnityEngine;
 public class HealItem : Item
 {
    
-    public override void UseItem()
+    public override void ItemEffect()
     {
         ValueManager.Instance.Heal();
     }

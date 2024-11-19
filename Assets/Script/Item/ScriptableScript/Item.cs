@@ -22,5 +22,5 @@ public abstract class Item : ScriptableObject
 
 
 
-    public abstract void UseItem();
+    public abstract void ItemEffect();
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeaponItem : Item
 {
 
-    public override void UseItem()
+    public override void ItemEffect()
     {
         ItemManager.Instance.WeaponStart();
     }

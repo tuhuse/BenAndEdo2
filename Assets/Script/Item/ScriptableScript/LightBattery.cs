@@ -6,7 +6,7 @@ using UnityEngine;
 public class LightBattery : Item
 {
 
-    public override void UseItem()
+    public override void ItemEffect()
     {        
             ItemManager.Instance.GetBattery();
         

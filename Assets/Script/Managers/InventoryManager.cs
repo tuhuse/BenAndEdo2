@@ -168,16 +168,17 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
             DecreaseStack(_items[itemIndex], itemIndex);
-            selectItem.UseItem();
+            selectItem.ItemEffect();
             StartCoroutine(UseCoolTime());
         }
         else if (_items[itemIndex].MyItemName == "Light")
         {
             // 特定アイテム（Light）の使用
-            selectItem.UseItem();
+            selectItem.ItemEffect();
         }
         else if (_items[itemIndex].MyItemName == "KeyItem")
         {
+            DecreaseStack(_items[itemIndex], itemIndex);
             // 特定アイテム（KeyItem）の使用
         }
     }
@@ -268,7 +269,7 @@ public class InventoryManager : MonoBehaviour
                 if (KeyCount == item.MaxStack)
                 {
                     RemoveItem(deleteItem);
-                    UseItem(deleteItem);
+                    ItemManager.Instance.KeyInstantiate();
                 }
                 break;
         }
