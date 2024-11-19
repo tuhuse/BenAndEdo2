@@ -154,6 +154,10 @@ public class InventoryManager : MonoBehaviour
     /// <param name="itemIndex"></param>
     public void UseItem(int itemIndex)
     {
+
+        string keyPiece = "KeyPiece";
+        string key = "Key";
+        string light = "Light";
         
         if (itemIndex < 0 || itemIndex >= _items.Length || _items[itemIndex] == null)
         {
@@ -164,22 +168,25 @@ public class InventoryManager : MonoBehaviour
         Item selectItem = _items[itemIndex];
 
        
-        if (_items[itemIndex].MyItemName != "KeyItem" && _items[itemIndex].MyItemName != "Light")
+        if (_items[itemIndex].MyItemName != keyPiece && _items[itemIndex].MyItemName != light)
         {
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
             DecreaseStack(_items[itemIndex], itemIndex);
             selectItem.ItemEffect();
             StartCoroutine(UseCoolTime());
         }
-        else if (_items[itemIndex].MyItemName == "Light")
+        else if (_items[itemIndex].MyItemName == light)
         {
             // 特定アイテム（Light）の使用
             selectItem.ItemEffect();
         }
-        else if (_items[itemIndex].MyItemName == "KeyItem")
+        else if (_items[itemIndex].MyItemName == keyPiece)
         {
             DecreaseStack(_items[itemIndex], itemIndex);
             // 特定アイテム（KeyItem）の使用
+        }else if (_items[itemIndex].MyItemName == key)
+        {
+            selectItem.ItemEffect();
         }
     }
     /// <summary>

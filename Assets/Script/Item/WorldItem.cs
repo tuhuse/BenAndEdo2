@@ -9,10 +9,7 @@ public class WorldItem : MonoBehaviour
 
     private void Start()
     {
-        playerTransform = GameObject.FindWithTag("Player").transform;
-
-
-        
+        playerTransform = GameObject.FindWithTag("Player").transform;        
     }
 
     private void Update()
