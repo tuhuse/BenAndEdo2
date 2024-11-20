@@ -13,9 +13,10 @@ public class ItemManager : MonoBehaviour
     private const float WAIT_TIME =0.5f ;
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
-    [SerializeField] private Light _flashLight; // 懐中電灯のライト
+    [SerializeField] private Light _flashLight=default; // 懐中電灯のライト
     [SerializeField] private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
 
+    [SerializeField] private CashBox _cashBox;
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
@@ -143,5 +144,10 @@ public class ItemManager : MonoBehaviour
         {
             KeyInstantiate();
         }
+        
+    }
+    public void OpenKey()
+    {
+        _cashBox.OpenCashBox();
     }
 }

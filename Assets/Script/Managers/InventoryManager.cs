@@ -6,24 +6,27 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
-    // シングルトンのインスタンス
-    public static InventoryManager Instance { get; private set; }
+
     // インベントリ内のアイテムを格納する配列
     [SerializeField] private Item[] _items;
-    // インベントリの最大サイズ
-    [SerializeField] private int _inventorySize = 5;
-    // 現在選択しているインベントリの番号
-    [SerializeField] private int _selectInventoryNumber = 0;
+    [SerializeField] private CashBox _cashBox;
     // インベントリUIの参照
     [SerializeField] private InventoryUI _inventoryUI;
     // アイテムの最小数（スタック処理で使用）
     private const int MIN_ITEM = 1;
-
+    // インベントリの最大サイズ
+    [SerializeField] private int _inventorySize = 5;
+    // 現在選択しているインベントリの番号
+    [SerializeField] private int _selectInventoryNumber = 0;
     // アイテムの個別カウント
     private int _healCnt;
     private int _weaponCnt;
     private int _lightBatteryCnt;
     private bool _isUse = true; // アイテムを使用可能かどうか
+
+
+    // シングルトンのインスタンス
+    public static InventoryManager Instance { get; private set; }
     /// <summary>
     /// プロパティ
     /// </summary>
@@ -168,7 +171,7 @@ public class InventoryManager : MonoBehaviour
         Item selectItem = _items[itemIndex];
 
        
-        if (_items[itemIndex].MyItemName != keyPiece && _items[itemIndex].MyItemName != light)
+        if (_items[itemIndex].MyItemName != keyPiece && _items[itemIndex].MyItemName != light&&_items[itemIndex].MyItemName != key)
         {
             Debug.Log(_items[itemIndex].MyItemName + " を使用しました。");
             DecreaseStack(_items[itemIndex], itemIndex);
@@ -185,8 +188,13 @@ public class InventoryManager : MonoBehaviour
             selectItem.ItemEffect();
             DecreaseStack(_items[itemIndex], itemIndex);
             // 特定アイテム（KeyItem）の使用
-        }else if (_items[itemIndex].MyItemName == key)
+        }
+        else if (_items[itemIndex].MyItemName == key)
         {
+            if (_cashBox.OpenDoor)
+            {
+                RemoveItem(itemIndex);
+            }
             selectItem.ItemEffect();
         }
     }
