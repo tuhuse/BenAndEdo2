@@ -3,20 +3,21 @@ using System.Collections;
 
 public class ItemManager : MonoBehaviour
 {
-    // シングルトンパターン用のインスタンス
-    public static ItemManager Instance { get; private set; }
-
+ 
     // 攻撃アイテム関連
     [SerializeField] private BoxCollider _weaponCollider; // 武器のコライダー
 
     // 鍵アイテム関連
     [SerializeField]
     private Item _completedKey;
+    private const float WAIT_TIME =0.5f ;
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
     [SerializeField] private Light _flashLight; // 懐中電灯のライト
     [SerializeField] private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
 
+    // シングルトンパターン用のインスタンス
+    public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
     private void Awake()
     {
@@ -93,7 +94,7 @@ public class ItemManager : MonoBehaviour
     /// </summary>
     public void GetBattery()
     {
-       
+
         if (_batteryLife < MAX_BATTERY_LIFE)
         {
             _batteryLife = MAX_BATTERY_LIFE;
@@ -125,6 +126,22 @@ public class ItemManager : MonoBehaviour
 
     public void KeyInstantiate()
     {
+        StartCoroutine(AddKey());
+    }
+    private IEnumerator AddKey()
+    {
+        yield return new WaitForSeconds(WAIT_TIME);
         InventoryManager.Instance.AddItem(_completedKey);
+    }
+    public void MakeKey()
+    {
+        if (InventoryManager.Instance.KeyCount < 3)
+        {
+            Debug.Log("素材が足りません");
+        }
+        else
+        {
+            KeyInstantiate();
+        }
     }
 }

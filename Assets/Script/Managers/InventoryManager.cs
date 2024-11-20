@@ -182,6 +182,7 @@ public class InventoryManager : MonoBehaviour
         }
         else if (_items[itemIndex].MyItemName == keyPiece)
         {
+            selectItem.ItemEffect();
             DecreaseStack(_items[itemIndex], itemIndex);
             // 特定アイテム（KeyItem）の使用
         }else if (_items[itemIndex].MyItemName == key)
@@ -276,7 +277,7 @@ public class InventoryManager : MonoBehaviour
                 if (KeyCount == item.MaxStack)
                 {
                     RemoveItem(deleteItem);
-                    ItemManager.Instance.KeyInstantiate();
+                    KeyCount -= 3;
                 }
                 break;
         }
