@@ -22,7 +22,7 @@ public class ValueManager : MonoBehaviour
     public float DashHP { get; private set; } = MAX_DASH_HP; // 現在のダッシュHP
     public int PlayerHP { get; private set; } = MAX_PLAYER_HP; // 現在のプレイヤーHP
 
-    private Coroutine _dashRecoveryCoroutine; // ダッシュHP回復のコルーチン管理用
+    private Coroutine _dashRecoveryCoroutine = default; // ダッシュHP回復のコルーチン管理用
 
     // シングルトンの設定
     private void Awake()

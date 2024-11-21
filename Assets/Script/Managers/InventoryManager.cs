@@ -8,10 +8,10 @@ public class InventoryManager : MonoBehaviour
 {
 
     // インベントリ内のアイテムを格納する配列
-    [SerializeField] private Item[] _items;
-    [SerializeField] private CashBox _cashBox;
+    [SerializeField] private Item[] _items = default;
+    [SerializeField] private CashBox _cashBox = default;
     // インベントリUIの参照
-    [SerializeField] private InventoryUI _inventoryUI;
+    [SerializeField] private InventoryUI _inventoryUI = default;
     // アイテムの最小数（スタック処理で使用）
     private const int MIN_ITEM = 1;
     // インベントリの最大サイズ
@@ -19,9 +19,9 @@ public class InventoryManager : MonoBehaviour
     // 現在選択しているインベントリの番号
     [SerializeField] private int _selectInventoryNumber = 0;
     // アイテムの個別カウント
-    private int _healCnt;
-    private int _weaponCnt;
-    private int _lightBatteryCnt;
+    private int _healCnt = default;
+    private int _weaponCnt = default;
+    private int _lightBatteryCnt=default;
     private bool _isUse = true; // アイテムを使用可能かどうか
 
 
@@ -206,30 +206,30 @@ public class InventoryManager : MonoBehaviour
     private void AddStack(Item item, int itemIndex)
     {
         // アイテムスタック数を増加
-        switch (item.MyItemID)
+        switch (item.MyItemType)
         {
-            case 1:
+            case Item.ItemType.WeaponItem:
                 if (item.MaxStack > _weaponCnt)
                 {
                     _weaponCnt++;
                     _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
-            case 2:
+            case Item.ItemType.LightBattery:
                 if (item.MaxStack > _lightBatteryCnt)
                 {
                     _lightBatteryCnt++;
                     _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
-            case 3:
+            case Item.ItemType.HealItem:
                 if (item.MaxStack > _healCnt)
                 {
                     _healCnt++;
                     _inventoryUI.UpdateSlotText(itemIndex);
                 }
                 break;
-            case 4:
+            case Item.ItemType.KeyPiece:
                 if (item.MaxStack > KeyCount)
                 {
                     KeyCount++;
@@ -246,9 +246,9 @@ public class InventoryManager : MonoBehaviour
     private void DecreaseStack(Item item, int deleteItem)
     {
         // アイテムスタック数を減少、スタックが0ならアイテム削除
-        switch (item.MyItemID)
+        switch (item.MyItemType)
         {
-            case 1:
+            case Item.ItemType.WeaponItem:
                 if (_weaponCnt <= item.MaxStack && _weaponCnt > MIN_ITEM)
                 {
                     _weaponCnt--;
@@ -259,7 +259,7 @@ public class InventoryManager : MonoBehaviour
                     RemoveItem(deleteItem);
                 }
                 break;
-            case 2:
+            case Item.ItemType.LightBattery:
                 if (_lightBatteryCnt <= item.MaxStack && _lightBatteryCnt > MIN_ITEM)
                 {
                     _lightBatteryCnt--;
@@ -270,7 +270,7 @@ public class InventoryManager : MonoBehaviour
                     RemoveItem(deleteItem);
                 }
                 break;
-            case 3:
+            case Item.ItemType.HealItem:
                 if (_healCnt <= item.MaxStack && _healCnt > MIN_ITEM)
                 {
                     _healCnt--;
@@ -281,7 +281,7 @@ public class InventoryManager : MonoBehaviour
                     RemoveItem(deleteItem);
                 }
                 break;
-            case 4:
+            case Item.ItemType.KeyPiece:
                 if (KeyCount == item.MaxStack)
                 {
                     RemoveItem(deleteItem);

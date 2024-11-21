@@ -5,18 +5,18 @@ public class ItemManager : MonoBehaviour
 {
  
     // 攻撃アイテム関連
-    [SerializeField] private BoxCollider _weaponCollider; // 武器のコライダー
+    [SerializeField] private BoxCollider _weaponCollider = default; // 武器のコライダー
 
     // 鍵アイテム関連
     [SerializeField]
-    private Item _completedKey;
+    private Item _completedKey = default;
     private const float WAIT_TIME =0.5f ;
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
     [SerializeField] private Light _flashLight=default; // 懐中電灯のライト
     [SerializeField] private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
 
-    [SerializeField] private CashBox _cashBox;
+    [SerializeField] private CashBox _cashBox = default;
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
@@ -134,6 +134,9 @@ public class ItemManager : MonoBehaviour
         yield return new WaitForSeconds(WAIT_TIME);
         InventoryManager.Instance.AddItem(_completedKey);
     }
+    /// <summary>
+    /// 鍵のかけらがあれば鍵を作る処理
+    /// </summary>
     public void MakeKey()
     {
         if (InventoryManager.Instance.KeyCount < 3)
@@ -146,6 +149,9 @@ public class ItemManager : MonoBehaviour
         }
         
     }
+    /// <summary>
+    /// 金庫との距離が近かったら鍵で金庫をあける処理
+    /// </summary>
     public void OpenKey()
     {
         _cashBox.OpenCashBox();
