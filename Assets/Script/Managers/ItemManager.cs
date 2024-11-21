@@ -3,20 +3,27 @@ using System.Collections;
 
 public class ItemManager : MonoBehaviour
 {
- 
+
     // 攻撃アイテム関連
-    [SerializeField] private BoxCollider _weaponCollider = default; // 武器のコライダー
+    [SerializeField] 
+    private BoxCollider _weaponCollider = default; // 武器のコライダー
 
     // 鍵アイテム関連
     [SerializeField]
     private Item _completedKey = default;
-    private const float WAIT_TIME =0.5f ;
+    [SerializeField]
+    private CashBox _cashBox = default;
+    private const float WAIT_TIME = 0.5f;
+    private const int MAX_KEY_COUNT = 3;
+  
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
-    [SerializeField] private Light _flashLight=default; // 懐中電灯のライト
-    [SerializeField] private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
+    [SerializeField]
+    private Light _flashLight = default; // 懐中電灯のライト
+    [SerializeField] 
+    private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
 
-    [SerializeField] private CashBox _cashBox = default;
+   
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
@@ -124,7 +131,10 @@ public class ItemManager : MonoBehaviour
         StartCoroutine(WeaponAttack());
     }
     #endregion
-
+    #region 鍵関連の処理
+    /// <summary>
+    /// 完成したカギをインベントリに格納する処理
+    /// </summary>
     public void KeyInstantiate()
     {
         StartCoroutine(AddKey());
@@ -139,7 +149,7 @@ public class ItemManager : MonoBehaviour
     /// </summary>
     public void MakeKey()
     {
-        if (InventoryManager.Instance.KeyCount < 3)
+        if (InventoryManager.Instance.KeyCount < MAX_KEY_COUNT)
         {
             Debug.Log("素材が足りません");
         }
@@ -147,7 +157,7 @@ public class ItemManager : MonoBehaviour
         {
             KeyInstantiate();
         }
-        
+
     }
     /// <summary>
     /// 金庫との距離が近かったら鍵で金庫をあける処理
@@ -156,4 +166,5 @@ public class ItemManager : MonoBehaviour
     {
         _cashBox.OpenCashBox();
     }
+    #endregion
 }

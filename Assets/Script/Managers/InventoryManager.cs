@@ -8,16 +8,21 @@ public class InventoryManager : MonoBehaviour
 {
 
     // インベントリ内のアイテムを格納する配列
-    [SerializeField] private Item[] _items = default;
-    [SerializeField] private CashBox _cashBox = default;
+    [SerializeField] 
+    private Item[] _items = default;
+    [SerializeField] 
+    private CashBox _cashBox = default;
     // インベントリUIの参照
-    [SerializeField] private InventoryUI _inventoryUI = default;
+    [SerializeField] 
+    private InventoryUI _inventoryUI = default;
     // アイテムの最小数（スタック処理で使用）
     private const int MIN_ITEM = 1;
     // インベントリの最大サイズ
-    [SerializeField] private int _inventorySize = 5;
+    [SerializeField] 
+    private int _inventorySize = 5;
     // 現在選択しているインベントリの番号
-    [SerializeField] private int _selectInventoryNumber = 0;
+    [SerializeField] 
+    private int _selectInventoryNumber = 0;
     // アイテムの個別カウント
     private int _healCnt = default;
     private int _weaponCnt = default;

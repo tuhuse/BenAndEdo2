@@ -6,7 +6,6 @@ public abstract class Item : ScriptableObject
 
 
     [SerializeField] private string _itemName;
-    [SerializeField] private int _itemID;
     [SerializeField] private Sprite _icon;
     [SerializeField] private bool _isStackable;
     [SerializeField, TextArea] private string _description;
