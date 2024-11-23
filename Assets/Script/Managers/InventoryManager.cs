@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// インベントリとしての機能を管理している
+/// </summary>
 public class InventoryManager : MonoBehaviour
 {
 
@@ -97,6 +100,7 @@ public class InventoryManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1 + addnumber))
             {
                 _selectInventoryNumber = addnumber;
+                _inventoryUI.SelectInventoryUI(addnumber);
                 break;
             }
         }

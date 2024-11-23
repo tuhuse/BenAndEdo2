@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// キャラクターのステータスに関係している値の変化を管理している
+/// </summary>
 public class ValueManager : MonoBehaviour
 {
     // シングルトンのインスタンス
