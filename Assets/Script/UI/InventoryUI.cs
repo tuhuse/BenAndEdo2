@@ -9,20 +9,26 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Image[] _inventorySlots;
     [SerializeField] private Image[] _inventoryBoxUI;
     [SerializeField] private Text[] _indexText;
+    [SerializeField] private Text[] _lightBatteryText;
     private const int UNSELECT_INVENTORY_COLOR = 80;
     private const int SELECT_INVENTORY_COLOR = 255;
+
+    public Text[] LightBatteryText { get => _lightBatteryText; set => _lightBatteryText = value; }
     /// <summary>
     /// インベントリにアイテムのスプライトを保存する
     /// </summary>
     /// <param name="slotIndex"></param>
     /// <param name="itemIcon"></param>
-    public void UpdateSlotImage(int slotIndex, Sprite itemIcon)
+    public void UpdateSlotImage(int slotIndex, Sprite itemIcon,Item.ItemType light)
     {
         if (slotIndex < _inventorySlots.Length)
         {
             _inventorySlots[slotIndex].sprite = itemIcon;
             _inventorySlots[slotIndex].enabled = true;
             _inventorySlots[slotIndex].enabled = itemIcon != null;
+        }if (light == Item.ItemType.Light)
+        {
+            _lightBatteryText[slotIndex].enabled = true;
         }
     }
     /// <summary>
@@ -76,6 +82,23 @@ public class InventoryUI : MonoBehaviour
 
     }
     /// <summary>
+    /// 懐中電灯のバッテリー状況を表示
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    /// <param name="batteryLife"></param>
+    /// <param name="maxBatteryLife"></param>
+    public void UpdateBatteryText(int slotIndex, float batteryLife, float maxBatteryLife)
+    {
+        if (slotIndex < _lightBatteryText.Length)
+        {
+            // バッテリー残量をパーセント表示に変換
+            int batteryPercentage = Mathf.CeilToInt((batteryLife / maxBatteryLife) * 100);
+            _lightBatteryText[slotIndex].text = batteryPercentage.ToString() + "%";
+            
+        }
+    }
+
+    /// <summary>
     /// 選択しているインベントリの色の透明度を変えている
     /// </summary>
     /// <param name="selectIndex"></param>
@@ -86,6 +109,7 @@ public class InventoryUI : MonoBehaviour
         {
 
             Color32 textColor = _indexText[selectNumber].color;
+            Color32 batteryTextColor = _lightBatteryText[selectNumber].color;
             Color32 itemImageColor = _inventorySlots[selectNumber].color;
             Color32 inventoryBoxColor = _inventoryBoxUI[selectNumber].color;
             if (selectNumber == selectIndex)
@@ -93,15 +117,18 @@ public class InventoryUI : MonoBehaviour
                 textColor.a =SELECT_INVENTORY_COLOR; // 完全不透明
                 itemImageColor.a = SELECT_INVENTORY_COLOR;
                 inventoryBoxColor.a = SELECT_INVENTORY_COLOR;
+                batteryTextColor.a = SELECT_INVENTORY_COLOR;
             }
             else
             {
                 textColor.a =UNSELECT_INVENTORY_COLOR; // 半透明（例）
                 itemImageColor.a = UNSELECT_INVENTORY_COLOR;
                 inventoryBoxColor.a = UNSELECT_INVENTORY_COLOR;
+                batteryTextColor.a = UNSELECT_INVENTORY_COLOR;
             }
 
             _indexText[selectNumber].color = textColor;
+            _lightBatteryText[selectNumber].color=batteryTextColor;
             _inventorySlots[selectNumber].color = itemImageColor;
             _inventoryBoxUI[selectNumber].color = inventoryBoxColor;
         }

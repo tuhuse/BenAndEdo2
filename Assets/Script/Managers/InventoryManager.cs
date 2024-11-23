@@ -117,9 +117,9 @@ public class InventoryManager : MonoBehaviour
         {
             if (_items[itemNumber] != null && newItem.MyItemName == _items[itemNumber].MyItemName && newItem.IsStackable)
             {
-                // スタック可能ならスタックを増加
+                // ストック可能ならストックを増加
                 AddStack(newItem, itemNumber);
-                Debug.Log(newItem.MyItemName + " のスタック数を増加しました。");
+                Debug.Log(newItem.MyItemName + " のストック数を増加しました。");
                 return true;
             }
         }
@@ -129,8 +129,12 @@ public class InventoryManager : MonoBehaviour
         {
             if (_items[itemNumber] == null)
             {
+                if (newItem.MyItemType == Item.ItemType.Light)
+                {
+                    ItemManager.Instance.GetLightInventoryNumber(itemNumber);
+                }
                 _items[itemNumber] = newItem;
-                _inventoryUI.UpdateSlotImage(itemNumber, newItem.MyIcon);
+                _inventoryUI.UpdateSlotImage(itemNumber, newItem.MyIcon,newItem.MyItemType);
                 AddStack(newItem, itemNumber); // スタック数も初期化
                 Debug.Log(newItem.MyItemName + " をインベントリに追加しました。");
                 return true;

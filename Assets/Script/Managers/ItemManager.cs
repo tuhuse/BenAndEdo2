@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ItemManager : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class ItemManager : MonoBehaviour
     private Light _flashLight = default; // 懐中電灯のライト
     [SerializeField] 
     private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
-
+    private int _lightInventorySlotNumber = default;
+    [SerializeField] private InventoryUI _inventoryUI = default;
    
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
@@ -45,6 +47,7 @@ public class ItemManager : MonoBehaviour
     {
         // ゲーム開始時に懐中電灯をオフに設定
         _flashLight.enabled = false;
+        
     }
 
     void Update()
@@ -53,6 +56,7 @@ public class ItemManager : MonoBehaviour
         if (LightOn)
         {
             UpdateLight();
+            
         }
     }
 
@@ -90,12 +94,25 @@ public class ItemManager : MonoBehaviour
 
             _batteryLife -= Time.deltaTime; // バッテリーを減少させる
 
+            // バッテリー残量をインベントリに更新
+            _inventoryUI.UpdateBatteryText(_lightInventorySlotNumber, _batteryLife, MAX_BATTERY_LIFE);
+
             if (_batteryLife <= 0)
             {
                 _flashLight.enabled = false; // バッテリーが切れたらライトをオフ
                 LightOn = false;
             }
         }
+    }
+    /// <summary>
+    /// 懐中電灯をどこのインベントリーでゲットしたか
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void GetLightInventoryNumber(int slotIndex)
+    {
+        _lightInventorySlotNumber = slotIndex;
+        // 初期バッテリー残量をインベントリに反映
+        _inventoryUI.UpdateBatteryText(_lightInventorySlotNumber, _batteryLife, MAX_BATTERY_LIFE);
     }
     /// <summary>
     /// 電池を使用したときバッテリー回復
