@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraView : MonoBehaviour
@@ -10,7 +11,6 @@ public class CameraView : MonoBehaviour
     [SerializeField] private Vector3 tpsOffset = new Vector3(0, 3, -3); // TPS視点のオフセット
     [SerializeField] private float minVerticalAngle = -30f; // 下方向の角度制限
     [SerializeField] private float maxVerticalAngle = 60f;  // 上方向の角度制限
-
     private bool _isFPS = true;
     private bool _isForward = false;
     private float verticalRotation = 0f;
@@ -85,5 +85,23 @@ public class CameraView : MonoBehaviour
             _isForward = false;
             _isFPS = true;
         }
+    }
+    public void LightSwitch()
+    {
+        if (_isFPS)
+        {
+            ItemManager.Instance.FlashLight[0].enabled = true;
+            ItemManager.Instance.FlashLight[1].enabled = false;
+        }
+        else
+        {
+            ItemManager.Instance.FlashLight[0].enabled = false;
+            ItemManager.Instance.FlashLight[1].enabled = true;
+        }
+    }
+    public void LightOff()
+    {
+        ItemManager.Instance.FlashLight[0].enabled = false;
+        ItemManager.Instance.FlashLight[1].enabled = false;
     }
 }

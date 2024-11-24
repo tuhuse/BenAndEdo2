@@ -20,15 +20,18 @@ public class ItemManager : MonoBehaviour
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
     [SerializeField]
-    private Light _flashLight = default; // 懐中電灯のライト
+    private Light[] _flashLight = default;
     [SerializeField] 
     private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
     private int _lightInventorySlotNumber = default;
     [SerializeField] private InventoryUI _inventoryUI = default;
-   
+    [SerializeField] private CameraView _cameraView = default;
+
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
+
+    public Light[] FlashLight { get => _flashLight; set=>_flashLight=value; }
     private void Awake()
     {
         // シングルトンパターンの実装
@@ -42,14 +45,6 @@ public class ItemManager : MonoBehaviour
             return;
         }
     }
-
-    void Start()
-    {
-        // ゲーム開始時に懐中電灯をオフに設定
-        _flashLight.enabled = false;
-        
-    }
-
     void Update()
     {
         // 懐中電灯がオンの場合、バッテリー消費処理を開始
@@ -71,12 +66,12 @@ public class ItemManager : MonoBehaviour
             LightOn = true;
             if (_batteryLife > 0)
             {
-                _flashLight.enabled = true; // バッテリーがあればライトをオン
+                _cameraView.LightSwitch(); // バッテリーがあればライトをオン
             }
         }
         else
         {
-            _flashLight.enabled = false; // ライトをオフ
+            _cameraView.LightOff();// ライトをオフ
             LightOn = false;
         }
     }
@@ -87,10 +82,6 @@ public class ItemManager : MonoBehaviour
     {
         if (_batteryLife > 0)
         {
-            if (!_flashLight.enabled)
-            {
-                _flashLight.enabled = true; // バッテリーがある場合ライトをオン
-            }
 
             _batteryLife -= Time.deltaTime; // バッテリーを減少させる
 
@@ -99,7 +90,7 @@ public class ItemManager : MonoBehaviour
 
             if (_batteryLife <= 0)
             {
-                _flashLight.enabled = false; // バッテリーが切れたらライトをオフ
+                _cameraView.LightOff(); // バッテリーが切れたらライトをオフ
                 LightOn = false;
             }
         }

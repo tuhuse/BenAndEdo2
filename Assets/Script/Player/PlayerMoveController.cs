@@ -78,11 +78,12 @@ public class PlayerMoveController : MonoBehaviour
 
         // ダッシュの速度計算
         float speed = _valueManager.MoveSpeed * (_isDash ? _dashMultiplier : 1f);
-        moveDirection = moveDirection.normalized * speed * Time.deltaTime;
+        moveDirection = moveDirection.normalized * speed;
 
-        // Rigidbodyを使った移動
-        _rb.MovePosition(transform.position + moveDirection);
+        // Rigidbodyのvelocityを設定して移動
+        _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
