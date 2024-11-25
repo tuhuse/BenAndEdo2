@@ -10,6 +10,7 @@ TagManager:
   - Weapon
   - Inventory
   - CashBox
+  - EscapeDoor
   layers:
   - Default
   - TransparentFX

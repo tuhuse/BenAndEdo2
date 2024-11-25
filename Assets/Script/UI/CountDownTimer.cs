@@ -6,18 +6,19 @@ using UnityEngine.SceneManagement;
 public class CountDownTimer : MonoBehaviour
 {
     [SerializeField] private Text _countDownText;
-    [SerializeField] private UnlockingButton _unlockingButton;
+    
     [SerializeField] private float _timeValue;
 
     private const float WAIT_TIME = 3f;
     private const float END_TIME_VALUE = 0f;
+    public bool StartTimer { get; set; } = false;
     void Update()
     {
         UpdateTimer();
     }
     private void UpdateTimer()
     {
-        if (_unlockingButton.StartTimer)
+        if (StartTimer)
         {
             if (_timeValue > END_TIME_VALUE)
             {

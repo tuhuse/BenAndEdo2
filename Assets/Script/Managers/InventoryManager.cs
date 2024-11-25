@@ -9,6 +9,7 @@ using UnityEngine.UI;
 /// </summary>
 public class InventoryManager : MonoBehaviour
 {
+    private const float WAIT_TIME = 0.5f;
 
     // インベントリ内のアイテムを格納する配列
     [SerializeField] 
@@ -204,10 +205,7 @@ public class InventoryManager : MonoBehaviour
         }
         else if (_items[itemIndex].MyItemName == key)
         {
-            if (_cashBox.OpenDoor)
-            {
-                RemoveItem(itemIndex);
-            }
+            StartCoroutine(RemoveKeyJuge(itemIndex));
             selectItem.ItemEffect();
         }
     }
@@ -303,5 +301,13 @@ public class InventoryManager : MonoBehaviour
                 break;
         }
         _inventoryUI.DeleteSlotText(deleteItem);
+    }
+    private IEnumerator RemoveKeyJuge(int index)
+    {
+        yield return new WaitForSeconds(WAIT_TIME);
+        if (_cashBox.OpenDoor)
+        {
+            RemoveItem(index);
+        }
     }
 }

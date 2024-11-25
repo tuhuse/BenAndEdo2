@@ -18,11 +18,11 @@ public class ItemManager : MonoBehaviour
     private const int MAX_KEY_COUNT = 3;
   
     // 懐中電灯関連
-    private const int MAX_BATTERY_LIFE = 60; // バッテリー寿命の最大値
+    private const int MAX_BATTERY_LIFE = 100; // バッテリー寿命の最大値
     [SerializeField]
     private Light[] _flashLight = default;
     [SerializeField] 
-    private float _batteryLife = 60f; // 現在のバッテリー寿命（秒）
+    private float _batteryLife = MAX_BATTERY_LIFE; // 現在のバッテリー寿命（秒）
     private int _lightInventorySlotNumber = default;
     [SerializeField] private InventoryUI _inventoryUI = default;
     [SerializeField] private CameraView _cameraView = default;
