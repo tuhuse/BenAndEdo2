@@ -13,6 +13,7 @@ TagManager:
   - EscapeDoor
   - InventoryUI
   - FlashLight
+  - FlashLight2
   layers:
   - Default
   - TransparentFX

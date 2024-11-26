@@ -23,6 +23,7 @@ public class CountDownTimer : MonoBehaviour
             if (_timeValue > END_TIME_VALUE)
             {
                 _timeValue -= Time.deltaTime;
+                _countDownText.text = _timeValue.ToString();
             }
             else
             {

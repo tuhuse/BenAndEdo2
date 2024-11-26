@@ -78,12 +78,35 @@ public class PlayerMoveController : MonoBehaviour
 
         // ダッシュの速度計算
         float speed = _valueManager.MoveSpeed * (_isDash ? _dashMultiplier : 1f);
+
+        // 壁との衝突に対応した移動計算
         moveDirection = moveDirection.normalized * speed;
+        Vector3 adjustedVelocity = AdjustDirectionForCollisions(moveDirection);
 
         // Rigidbodyのvelocityを設定して移動
-        _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
+        _rb.velocity = new Vector3(adjustedVelocity.x, _rb.velocity.y, adjustedVelocity.z);
     }
 
+    /// <summary>
+    /// 壁との衝突に応じて移動方向を調整する
+    /// </summary>
+    /// <param name="desiredDirection">入力された移動方向</param>
+    /// <returns>調整された移動方向</returns>
+    private Vector3 AdjustDirectionForCollisions(Vector3 desiredDirection)
+    {
+        RaycastHit hit;
+        Vector3 adjustedDirection = desiredDirection;
+
+        // 衝突判定
+        if (Physics.Raycast(transform.position, desiredDirection, out hit, 0.5f))
+        {
+            // 壁にぶつかった場合、壁の法線方向を除外して滑るようにする
+            Vector3 wallNormal = hit.normal;
+            adjustedDirection = Vector3.ProjectOnPlane(desiredDirection, wallNormal);
+        }
+
+        return adjustedDirection;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CashBox : MonoBehaviour
 {
-    [SerializeField] private Transform _playerTransform;
+    private Transform _playerTransform;
     [SerializeField] private GameObject _KeyHoleMesh;
     [SerializeField] private MeshRenderer _cashBoxMesh;
     private float _openRange = 2f;
@@ -14,10 +14,11 @@ public class CashBox : MonoBehaviour
    public bool OpenDoor { get; private set; } = false;
 
 
-    private void Start()
+    private void OnEnable()
     {
         _playerTransform = GameObject.FindWithTag("Player").transform;
     }
+   
     public void OpenCashBox()
     {
         float distancePlayer = Vector3.Distance(this.transform.position, _playerTransform.position);

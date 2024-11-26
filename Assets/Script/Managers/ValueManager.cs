@@ -10,7 +10,7 @@ public class ValueManager : MonoBehaviour
     public static ValueManager Instance { get; private set; }
 
     // 定数定義
-    private const float MAX_SPEED = 10f; // 最大移動速度
+    private const float MAX_SPEED = 8f; // 最大移動速度
     private const float MAX_DASH_HP = 100f; // ダッシュ用のHPの最大値
     private const float STAMINA_HEAL = 10f; // ダッシュHPの回復量
     private const int MAX_PLAYER_HP = 3; // プレイヤーの最大HP

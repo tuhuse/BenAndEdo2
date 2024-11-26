@@ -14,7 +14,7 @@ public class ItemInventory : MonoBehaviour
     // インベントリ内のアイテムを格納する配列
     [SerializeField] 
     private Item[] _items = default;
-    [SerializeField]
+    
     private CashBox _cashBox = default;
     // インベントリUIの参照 
     [SerializeField]
@@ -44,6 +44,7 @@ public class ItemInventory : MonoBehaviour
     {
         // インベントリ配列を初期化
         _items = new Item[_inventorySize];
+        _cashBox =FindFirstObjectByType<CashBox>();
     }
 
     private void Update()

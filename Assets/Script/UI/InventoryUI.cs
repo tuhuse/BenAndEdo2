@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,13 +11,16 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Image[] _inventorySlots;
     [SerializeField] private Image[] _inventoryBoxUI;
     [SerializeField] private Text[] _indexText;
-    [SerializeField] private Text[] _lightBatteryText;
+    [SerializeField] private List<Text> _lightBatteryText;
     private const int UNSELECT_INVENTORY_COLOR = 80;
     private const int SELECT_INVENTORY_COLOR = 255;
     private const int MAX_SLOT = 5;
 
-    
-    public Text[] LightBatteryText { get => _lightBatteryText; set => _lightBatteryText = value; }
+    private void OnEnable()
+    {
+        
+    }
+
     /// <summary>
     /// インベントリにアイテムのスプライトを保存する
     /// </summary>
@@ -92,14 +96,18 @@ public class InventoryUI : MonoBehaviour
     /// <param name="maxBatteryLife"></param>
     public void UpdateBatteryText(int slotIndex, float batteryLife, float maxBatteryLife)
     {
-        if (slotIndex < _lightBatteryText.Length)
+        // テキストオブジェクトが破棄されているかチェック
+        if (_lightBatteryText == null || _lightBatteryText[slotIndex] == null)
         {
-            // バッテリー残量をパーセント表示に変換
-            int batteryPercentage = Mathf.CeilToInt((batteryLife / maxBatteryLife) * 100);
-            _lightBatteryText[slotIndex].text = batteryPercentage.ToString() + "%";
-            
+            Debug.LogWarning("Battery text reference is missing for slot " + slotIndex);
+            return; // 安全にスキップ
         }
+
+        // バッテリー残量を計算して表示
+        int batteryPercentage = Mathf.CeilToInt((batteryLife / maxBatteryLife) * 100);
+        _lightBatteryText[slotIndex].text = batteryPercentage.ToString() + "%";
     }
+
 
     /// <summary>
     /// 選択しているインベントリの色の透明度を変えている
