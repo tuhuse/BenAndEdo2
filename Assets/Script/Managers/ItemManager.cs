@@ -4,40 +4,51 @@ using UnityEngine.UI;
 
 public class ItemManager : MonoBehaviour
 {
+    private ItemInventory _inventoryManager;
+    private InventoryUI _inventoryUI = default;
+    private CameraView _cameraView = default;
+    private CashBox _cashBox = default;
 
     // 攻撃アイテム関連
-    [SerializeField] 
+    //[SerializeField] 
     private BoxCollider _weaponCollider = default; // 武器のコライダー
 
     // 鍵アイテム関連
     [SerializeField]
-    private Item _completedKey = default;
-    [SerializeField]
-    private CashBox _cashBox = default;
+    private Item _completedKey = default;  
     private const float WAIT_TIME = 0.5f;
     private const int MAX_KEY_COUNT = 3;
   
     // 懐中電灯関連
     private const int MAX_BATTERY_LIFE = 100; // バッテリー寿命の最大値
-    [SerializeField]
-    private Light[] _flashLight = default;
+    //[SerializeField]
+   
     [SerializeField] 
     private float _batteryLife = MAX_BATTERY_LIFE; // 現在のバッテリー寿命（秒）
     private int _lightInventorySlotNumber = default;
-    [SerializeField] private InventoryUI _inventoryUI = default;
-    [SerializeField] private CameraView _cameraView = default;
+   
 
     // シングルトンパターン用のインスタンス
     public static ItemManager Instance { get; private set; }
     public bool LightOn { get; private set; } // 懐中電灯がオンかどうか
 
-    public Light[] FlashLight { get => _flashLight; set=>_flashLight=value; }
+  
+
+    private void OnEnable()
+    {
+        _inventoryManager = FindAnyObjectByType<ItemInventory>();
+        _inventoryUI = FindAnyObjectByType<InventoryUI>();
+        _cameraView = FindAnyObjectByType<CameraView>();
+        _cashBox = FindAnyObjectByType<CashBox>();
+        _weaponCollider = GameObject.FindWithTag("Weapon").GetComponent<BoxCollider>();
+    }
     private void Awake()
     {
         // シングルトンパターンの実装
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -150,14 +161,14 @@ public class ItemManager : MonoBehaviour
     private IEnumerator AddKey()
     {
         yield return new WaitForSeconds(WAIT_TIME);
-        InventoryManager.Instance.AddItem(_completedKey);
+        _inventoryManager.AddItem(_completedKey);
     }
     /// <summary>
     /// 鍵のかけらがあれば鍵を作る処理
     /// </summary>
     public void MakeKey()
     {
-        if (InventoryManager.Instance.KeyCount < MAX_KEY_COUNT)
+        if (_inventoryManager.KeyCount < MAX_KEY_COUNT)
         {
             Debug.Log("素材が足りません");
         }

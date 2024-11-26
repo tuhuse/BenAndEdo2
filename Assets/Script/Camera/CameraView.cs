@@ -7,6 +7,7 @@ public class CameraView : MonoBehaviour
 {
     [SerializeField] private GameObject _cameraPosi;
     private Camera _camera;
+   [SerializeField] private Light[] _flashLight = default;
     [SerializeField] private float _mouseSensitivity = 100f; // 適切なマウス感度に設定
     [SerializeField] private Vector3 tpsOffset = new Vector3(0, 3, -3); // TPS視点のオフセット
     [SerializeField] private float minVerticalAngle = -30f; // 下方向の角度制限
@@ -14,7 +15,7 @@ public class CameraView : MonoBehaviour
     private bool _isFPS = true;
     private bool _isForward = false;
     private float verticalRotation = 0f;
-
+    public Light[] FlashLight { get => _flashLight; set => _flashLight = value; }
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;  // カーソルをロック
@@ -90,18 +91,18 @@ public class CameraView : MonoBehaviour
     {
         if (_isFPS)
         {
-            ItemManager.Instance.FlashLight[0].enabled = true;
-            ItemManager.Instance.FlashLight[1].enabled = false;
+            FlashLight[0].enabled = true;
+            FlashLight[1].enabled = false;
         }
         else
         {
-            ItemManager.Instance.FlashLight[0].enabled = false;
-            ItemManager.Instance.FlashLight[1].enabled = true;
+            FlashLight[0].enabled = false;
+            FlashLight[1].enabled = true;
         }
     }
     public void LightOff()
     {
-        ItemManager.Instance.FlashLight[0].enabled = false;
-        ItemManager.Instance.FlashLight[1].enabled = false;
+        FlashLight[0].enabled = false;
+        FlashLight[1].enabled = false;
     }
 }

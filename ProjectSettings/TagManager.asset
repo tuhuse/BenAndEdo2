@@ -11,6 +11,8 @@ TagManager:
   - Inventory
   - CashBox
   - EscapeDoor
+  - InventoryUI
+  - FlashLight
   layers:
   - Default
   - TransparentFX

@@ -7,17 +7,17 @@ using UnityEngine.UI;
 /// <summary>
 /// インベントリとしての機能を管理している
 /// </summary>
-public class InventoryManager : MonoBehaviour
+public class ItemInventory : MonoBehaviour
 {
     private const float WAIT_TIME = 0.5f;
 
     // インベントリ内のアイテムを格納する配列
     [SerializeField] 
     private Item[] _items = default;
-    [SerializeField] 
+    [SerializeField]
     private CashBox _cashBox = default;
-    // インベントリUIの参照
-    [SerializeField] 
+    // インベントリUIの参照 
+    [SerializeField]
     private InventoryUI _inventoryUI = default;
     // アイテムの最小数（スタック処理で使用）
     private const int MIN_ITEM = 1;
@@ -34,26 +34,11 @@ public class InventoryManager : MonoBehaviour
     private bool _isUse = true; // アイテムを使用可能かどうか
 
 
-    // シングルトンのインスタンス
-    public static InventoryManager Instance { get; private set; }
     /// <summary>
     /// プロパティ
     /// </summary>
     public int KeyCount { get; private set; } // キーアイテムのカウント
-
-    private void Awake()
-    {
-        // シングルトンパターンの設定
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);  // インスタンスが重複している場合、破棄する
-            return;
-        }
-    }
+  
 
     void Start()
     {

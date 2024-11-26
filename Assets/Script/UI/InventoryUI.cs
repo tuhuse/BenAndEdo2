@@ -6,13 +6,16 @@ using UnityEngine.UI;
 /// </summary>
 public class InventoryUI : MonoBehaviour
 {
+    [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private Image[] _inventorySlots;
     [SerializeField] private Image[] _inventoryBoxUI;
     [SerializeField] private Text[] _indexText;
     [SerializeField] private Text[] _lightBatteryText;
     private const int UNSELECT_INVENTORY_COLOR = 80;
     private const int SELECT_INVENTORY_COLOR = 255;
+    private const int MAX_SLOT = 5;
 
+    
     public Text[] LightBatteryText { get => _lightBatteryText; set => _lightBatteryText = value; }
     /// <summary>
     /// インベントリにアイテムのスプライトを保存する
