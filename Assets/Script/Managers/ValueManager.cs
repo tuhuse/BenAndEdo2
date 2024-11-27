@@ -33,7 +33,7 @@ public class ValueManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ÉVÅ[Éìä‘Ç≈îjä¸Ç≥ÇÍÇ»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ
+           
         }
         else
         {

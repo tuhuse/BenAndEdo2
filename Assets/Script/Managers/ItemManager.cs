@@ -37,10 +37,7 @@ public class ItemManager : MonoBehaviour
     private void OnEnable()
     {
         _inventoryManager = FindAnyObjectByType<ItemInventory>();
-        _inventoryUI = FindAnyObjectByType<InventoryUI>();
-        _cameraView = FindAnyObjectByType<CameraView>();
-        _cashBox = FindAnyObjectByType<CashBox>();
-        _weaponCollider = GameObject.FindWithTag("Weapon").GetComponent<BoxCollider>();
+        _inventoryUI = FindAnyObjectByType<InventoryUI>();              
     }
     private void Awake()
     {
@@ -55,6 +52,12 @@ public class ItemManager : MonoBehaviour
             Destroy(gameObject); // インスタンスが重複している場合は破棄
             return;
         }
+    }
+    private void Start()
+    {
+        _cashBox = FindAnyObjectByType<CashBox>();
+        _cameraView = FindAnyObjectByType<CameraView>();
+        _weaponCollider = GameObject.FindWithTag("Weapon").GetComponent<BoxCollider>();
     }
     void Update()
     {
