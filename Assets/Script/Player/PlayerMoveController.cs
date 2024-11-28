@@ -8,19 +8,19 @@ public class PlayerMoveController : MonoBehaviour
     private ValueManager _valueManager;
     private Rigidbody _rb;
 
-    public enum PlayerStatus
+    public enum PlayerState
     {
         Idle,
         Walk,
         Run
     }
-    public PlayerStatus _playerStatus { get; private set; }
+    public PlayerState PlayerCurrentsState { get; private set; }
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _valueManager = ValueManager.Instance;
-        _playerStatus = PlayerStatus.Idle;
+        PlayerCurrentsState = PlayerState.Idle;
     }
 
     private void FixedUpdate()
@@ -65,15 +65,15 @@ public class PlayerMoveController : MonoBehaviour
         // 状態の更新
         if (moveDirection == Vector3.zero)
         {
-            _playerStatus = PlayerStatus.Idle;
+            PlayerCurrentsState = PlayerState.Idle;
         }
         else if (_isDash)
         {
-            _playerStatus = PlayerStatus.Run;
+            PlayerCurrentsState = PlayerState.Run;
         }
         else
         {
-            _playerStatus = PlayerStatus.Walk;
+            PlayerCurrentsState = PlayerState.Walk;
         }
 
         // ダッシュの速度計算
@@ -108,11 +108,11 @@ public class PlayerMoveController : MonoBehaviour
         return adjustedDirection;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            _valueManager.Damage();
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Enemy"))
+    //    {
+    //        _valueManager.Damage();
+    //    }
+    //}
 }

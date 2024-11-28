@@ -10,7 +10,7 @@ public class PlayerAnimatorController : MonoBehaviour
     [SerializeField] private RuntimeAnimatorController _walkController;
     [SerializeField] private PlayerMoveController _player;
 
-    private PlayerMoveController.PlayerStatus _previousStatus;
+    private PlayerMoveController.PlayerState _previousStatus;
 
     void Start()
     {
@@ -18,13 +18,13 @@ public class PlayerAnimatorController : MonoBehaviour
         _animator.runtimeAnimatorController = _idle;
 
         // 初期ステータスを保存
-        _previousStatus = _player._playerStatus;
+        _previousStatus = _player.PlayerCurrentsState;
     }
 
     void Update()
     {
         // 現在のプレイヤーステータスを取得
-        var currentStatus = _player._playerStatus;
+        PlayerMoveController.PlayerState currentStatus = _player.PlayerCurrentsState;
 
         // ステータスが変わった時だけ処理を実行
         if (_previousStatus != currentStatus)
@@ -34,19 +34,19 @@ public class PlayerAnimatorController : MonoBehaviour
         }
     }
 
-    private void HandleStatusChange(PlayerMoveController.PlayerStatus newStatus)
+    private void HandleStatusChange(PlayerMoveController.PlayerState newStatus)
     {
         switch (newStatus)
         {
-            case PlayerMoveController.PlayerStatus.Idle:
+            case PlayerMoveController.PlayerState.Idle:
                 _animator.runtimeAnimatorController = _idle;
                 break;
 
-            case PlayerMoveController.PlayerStatus.Walk:
+            case PlayerMoveController.PlayerState.Walk:
                 _animator.runtimeAnimatorController = _walkController;
                 break;
 
-            case PlayerMoveController.PlayerStatus.Run:
+            case PlayerMoveController.PlayerState.Run:
                 _animator.runtimeAnimatorController = _runController;
                 break;
 
