@@ -14,7 +14,10 @@ public class GameObjectGenerator : MonoBehaviour
     private GameObject _southAndNorthGoalDoor;
     private const int MAX_INDEX = 4;
     private const int MIN_INDEX = 0;
+    private const int MAX_RANDOM_INDEX = 6;
+    private const int MIN_RANDOM_INDEX = 0;
     private int _selectPosition = default;
+    private int[] _randomindex = default;
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -41,16 +44,36 @@ public class GameObjectGenerator : MonoBehaviour
     {
         if (spawnData.Name != SpawnPrefabsData.PrefabName.KeyPiece)
         {
-            foreach (var spawnPoint in spawnData.SpawnPoints)
+            foreach (Transform spawnPoint in spawnData.SpawnPoints)
             {
                 Instantiate(spawnData.ItemPrefab, spawnPoint.position, spawnPoint.rotation);
             }
         }
         else
         {
+            // ランダムに3つのスポーンポイントを選択して生成
+            List<int> availableIndices = new List<int>();
+            for (int selectNumber = 0; selectNumber < spawnData.SpawnPoints.Length; selectNumber++)
+            {
+                availableIndices.Add(selectNumber);
+            }
 
+            for (int count = 0; count < 3; count++)
+            {
+                if (availableIndices.Count == 0) break; // 利用可能なスポーンポイントがない場合は終了
+
+                // ランダムにインデックスを選択して削除
+                int randomIndex = Random.Range(0, availableIndices.Count);
+                int spawnIndex = availableIndices[randomIndex];
+                availableIndices.RemoveAt(randomIndex);
+
+                // インスタンスを生成
+                Instantiate(spawnData.ItemPrefab,
+                            spawnData.SpawnPoints[spawnIndex].position,
+                            spawnData.SpawnPoints[spawnIndex].rotation);
+            }
         }
-        
+
     }
 
     // 単一のアイテム生成

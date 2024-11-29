@@ -5,6 +5,8 @@ public class PlayerMoveController : MonoBehaviour
 {
     [SerializeField] private float _dashMultiplier = 2f;
     private bool _isDash = false;
+    private bool _isTired = false;
+    private const float UNTIRED_HP = 30f;
     private ValueManager _valueManager;
     private Rigidbody _rb;
 
@@ -35,16 +37,28 @@ public class PlayerMoveController : MonoBehaviour
 
     private void HandleDashInput()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && _valueManager.DashHP > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && _valueManager.DashHP > 0&&!_isTired)
         {
             _isDash = true;
             _valueManager.DashHPDecrease();
-            _valueManager.StopDashRecovery();
+        }
+        else if(_valueManager.DashHP==0)
+        {
+            _isTired = true;
+            _valueManager.StartDashRecovery();
+           
         }
         else
         {
             _isDash = false;
             _valueManager.StartDashRecovery();
+        }
+        if (_isTired)
+        {
+            if (_valueManager.DashHP >= UNTIRED_HP)
+            {
+                _isTired = false;
+            }
         }
     }
 
@@ -97,16 +111,25 @@ public class PlayerMoveController : MonoBehaviour
         RaycastHit hit;
         Vector3 adjustedDirection = desiredDirection;
 
-        // Õ“Ë”»’è
-        if (Physics.Raycast(transform.position, desiredDirection, out hit, 0.5f))
+        // Õ“Ë”»’è: •Ç‚Æ‚Ì‹——£‚ð’Z‚­Ý’è
+        if (Physics.Raycast(transform.position, desiredDirection.normalized, out hit, 0.5f))
         {
-            // •Ç‚É‚Ô‚Â‚©‚Á‚½ê‡A•Ç‚Ì–@ü•ûŒü‚ðœŠO‚µ‚ÄŠŠ‚é‚æ‚¤‚É‚·‚é
+            // •Ç‚Ì–@ü•ûŒü‚ðŽæ“¾
             Vector3 wallNormal = hit.normal;
-            adjustedDirection = Vector3.ProjectOnPlane(desiredDirection, wallNormal);
+
+            // •Ç‚É‰ˆ‚¤•ûŒü‚ðŒvŽZ
+            Vector3 wallTangent = Vector3.Cross(wallNormal, Vector3.up).normalized;
+
+            // •Ç‚Ì•ûŒü‚É“Š‰e‚³‚ê‚½ˆÚ“®•ûŒü‚ðŒvŽZ
+            adjustedDirection = Vector3.Dot(desiredDirection, wallTangent) > 0
+                ? wallTangent * desiredDirection.magnitude
+                : -wallTangent * desiredDirection.magnitude;
         }
 
         return adjustedDirection;
     }
+
+
 
     //private void OnCollisionEnter(Collision collision)
     //{

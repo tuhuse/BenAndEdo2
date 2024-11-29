@@ -19,6 +19,8 @@ public class ItemInventory : MonoBehaviour
     // インベントリUIの参照 
     [SerializeField]
     private InventoryUI _inventoryUI = default;
+    private EnemyAI _enemyAI = default;
+    private MissionUI _missionUI = default;
     // アイテムの最小数（スタック処理で使用）
     private const int MIN_ITEM = 1;
     // インベントリの最大サイズ
@@ -45,6 +47,8 @@ public class ItemInventory : MonoBehaviour
         // インベントリ配列を初期化
         _items = new Item[_inventorySize];
         _cashBox =FindFirstObjectByType<CashBox>();
+        _enemyAI  =FindFirstObjectByType<EnemyAI>();
+        _missionUI = MissionUI.Instance;
     }
 
     private void Update()
@@ -119,6 +123,8 @@ public class ItemInventory : MonoBehaviour
                 if (newItem.MyItemType == Item.ItemType.Light)
                 {
                     ItemManager.Instance.GetLightInventoryNumber(itemNumber);
+                    StartCoroutine(_enemyAI.EnemyMoveStart());
+                    _missionUI.Mission1();
                 }
                 _items[itemNumber] = newItem;
                 _inventoryUI.UpdateSlotImage(itemNumber, newItem.MyIcon,newItem.MyItemType);
@@ -177,6 +183,7 @@ public class ItemInventory : MonoBehaviour
             DecreaseStack(_items[itemIndex], itemIndex);
             selectItem.ItemEffect();
             StartCoroutine(UseCoolTime());
+            _inventoryUI.CoolDownUI(itemIndex);
         }
         else if (_items[itemIndex].MyItemName == light)
         {
@@ -231,6 +238,10 @@ public class ItemInventory : MonoBehaviour
                 {
                     KeyCount++;
                     _inventoryUI.UpdateSlotText(itemIndex);
+                    if (KeyCount == 3)
+                    {
+                        _missionUI.Mission2();
+                    }
                 }
                 break;
         }
@@ -242,9 +253,12 @@ public class ItemInventory : MonoBehaviour
     /// <param name="deleteItem"></param>
     private void DecreaseStack(Item item, int deleteItem)
     {
+        int argument = 1;
+        int keyPieceArgument = 3;
         // アイテムスタック数を減少、スタックが0ならアイテム削除
         switch (item.MyItemType)
         {
+
             case Item.ItemType.WeaponItem:
                 if (_weaponCnt <= item.MaxStack && _weaponCnt > MIN_ITEM)
                 {
@@ -255,6 +269,7 @@ public class ItemInventory : MonoBehaviour
                     _weaponCnt--;
                     RemoveItem(deleteItem);
                 }
+                _inventoryUI.DeleteSlotText(deleteItem,argument);
                 break;
             case Item.ItemType.LightBattery:
                 if (_lightBatteryCnt <= item.MaxStack && _lightBatteryCnt > MIN_ITEM)
@@ -266,6 +281,7 @@ public class ItemInventory : MonoBehaviour
                     _lightBatteryCnt--;
                     RemoveItem(deleteItem);
                 }
+                _inventoryUI.DeleteSlotText(deleteItem, argument);
                 break;
             case Item.ItemType.HealItem:
                 if (_healCnt <= item.MaxStack && _healCnt > MIN_ITEM)
@@ -277,16 +293,19 @@ public class ItemInventory : MonoBehaviour
                     _healCnt--;
                     RemoveItem(deleteItem);
                 }
+                _inventoryUI.DeleteSlotText(deleteItem, argument);
                 break;
             case Item.ItemType.KeyPiece:
                 if (KeyCount == item.MaxStack)
                 {
                     RemoveItem(deleteItem);
                     KeyCount -= 3;
+                    _inventoryUI.DeleteSlotText(deleteItem, keyPieceArgument);
+                    _missionUI.Mission3();
                 }
                 break;
         }
-        _inventoryUI.DeleteSlotText(deleteItem);
+        
     }
     private IEnumerator RemoveKeyJuge(int index)
     {

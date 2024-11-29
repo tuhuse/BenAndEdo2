@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class UnlockingButton : MonoBehaviour
 {
-    [SerializeField] private CashBox _cashBox;
-    private CountDownTimer _countDownTimer;
-    private GameObjectGenerator _objectGenerator;
+    [SerializeField] private CashBox _cashBox=default;
+    private CountDownTimer _countDownTimer = default;
+    private GameObjectGenerator _objectGenerator=default;
+    private AudioManager _audioManager = default;
+    private EnemyAI _enemyAI = default;
     private bool _unDoor = true;
 
 
@@ -14,6 +16,9 @@ public class UnlockingButton : MonoBehaviour
     {
         _objectGenerator = FindFirstObjectByType<GameObjectGenerator>();
         _countDownTimer = FindFirstObjectByType<CountDownTimer>();
+        _audioManager = FindFirstObjectByType<AudioManager>();
+        _enemyAI = FindFirstObjectByType<EnemyAI>();
+       
     }
     void Update()
     {
@@ -24,6 +29,9 @@ public class UnlockingButton : MonoBehaviour
                 _objectGenerator.PositionSelect();
                 _unDoor = false;
                _countDownTimer.StartTimer = true;
+                _audioManager.EscapeTrue();
+                _enemyAI.EveryChaseON();
+                MissionUI.Instance.Mission5();
             }
         }
        

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 public class EscapeCollision : MonoBehaviour
 {
 
@@ -8,7 +7,7 @@ public class EscapeCollision : MonoBehaviour
         string player = "Player";
         if (other.gameObject.CompareTag(player))
         {
-            SceneManager.LoadScene("GameClear");
+            GameManager.Instance.OnGameClear();
         }
     }
 }

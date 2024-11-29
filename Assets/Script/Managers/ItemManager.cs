@@ -34,11 +34,7 @@ public class ItemManager : MonoBehaviour
 
   
 
-    private void OnEnable()
-    {
-        _inventoryManager = FindAnyObjectByType<ItemInventory>();
-        _inventoryUI = FindAnyObjectByType<InventoryUI>();              
-    }
+    
     private void Awake()
     {
         // シングルトンパターンの実装
@@ -55,6 +51,8 @@ public class ItemManager : MonoBehaviour
     }
     private void Start()
     {
+        _inventoryManager = FindAnyObjectByType<ItemInventory>();
+        _inventoryUI = FindAnyObjectByType<InventoryUI>();
         _cashBox = FindAnyObjectByType<CashBox>();
         _cameraView = FindAnyObjectByType<CameraView>();
         _weaponCollider = GameObject.FindWithTag("Weapon").GetComponent<BoxCollider>();
@@ -124,11 +122,10 @@ public class ItemManager : MonoBehaviour
     /// </summary>
     public void GetBattery()
     {
+        // バッテリー残量をインベントリに更新
+        _batteryLife = MAX_BATTERY_LIFE;
+        _inventoryUI.UpdateBatteryText(_lightInventorySlotNumber, _batteryLife, MAX_BATTERY_LIFE);
 
-        if (_batteryLife < MAX_BATTERY_LIFE)
-        {
-            _batteryLife = MAX_BATTERY_LIFE;
-        }
     }
     #endregion
 

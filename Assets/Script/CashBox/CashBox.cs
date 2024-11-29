@@ -25,7 +25,8 @@ public class CashBox : MonoBehaviour
 
         if (distancePlayer < _openRange)
         {
-            StartCoroutine(StateBool());        
+            StartCoroutine(StateBool());
+            MissionUI.Instance.Mission4();
         }
         else
         {

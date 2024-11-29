@@ -9,7 +9,7 @@ public class CountDownTimer : MonoBehaviour
     
     [SerializeField] private float _timeValue;
 
-    private const float WAIT_TIME = 3f;
+    
     private const float END_TIME_VALUE = 0f;
     public bool StartTimer { get; set; } = false;
     void Update()
@@ -27,16 +27,10 @@ public class CountDownTimer : MonoBehaviour
             }
             else
             {
-                StartCoroutine(GameOverTransition());
+                GameManager.Instance.OnGameOver2();
             }
         }
     }
-    private IEnumerator GameOverTransition()
-    {
-        //アニメーション流したいこの頃
-        yield return new WaitForSeconds(WAIT_TIME);
-        //シーン移動
-    }
-
+   
 
 }

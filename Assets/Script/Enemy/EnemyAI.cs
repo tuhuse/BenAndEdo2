@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,17 +10,22 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private Transform[] _waypoints; // Waypoints（巡回地点の配列）
-    [SerializeField] private float _detectionRange = 10f; // プレイヤーを検知する範囲（単位：メートル）
+    [SerializeField] private float _detectionRange = 20f; // プレイヤーを検知する範囲（単位：メートル）
     [SerializeField] private float _waypointStoppingDistance = 0.5f; // Waypointに到達したとみなす距離
 
     private int _previousWaypointIndex = -1; // 前回のWaypointインデックス
     private int _randomIndex = default;
     private const int RAY_LENGTH = 20;
+    private const int ENEMY_STAY_TIME = 30;
     private const int WAIT_TIME = 3;
+    private const int DAMAGE_WAIT_TIME = 5;
     private string _playerTag = "Player";
     private Transform _player; // プレイヤーのTransform（ゲーム開始時に取得）
     private NavMeshAgent _agent;
     private bool _isAttack = false;
+    private bool _isStay = true;
+    private bool _isInvincible = false;
+    private bool _isEveryChase=false;
     /// <summary>
     /// 敵の行動状態を定義する列挙型
     /// </summary>
@@ -27,9 +33,11 @@ public class EnemyAI : MonoBehaviour
     {
         Patrol,
         Chase,
-        Attack
+        Attack,
+        Idle,
+        EveryChase
     }
-    public EnemyState EnemyCurrentState { get; private set; } // 現在の状態
+    public EnemyState EnemyCurrentState { get;private set; } // 現在の状態
 
     private RaycastHit _hit;
     /// <summary>
@@ -55,8 +63,8 @@ public class EnemyAI : MonoBehaviour
         }
 
         // 初期状態を巡回に設定し、最初のWaypointに向かう
-        EnemyCurrentState = EnemyState.Patrol;
-        MoveToNextWaypoint();
+        EnemyCurrentState = EnemyState.Idle;
+        //MoveToNextWaypoint();
     }
 
     /// <summary>
@@ -65,15 +73,30 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     void Update()
     {
-        if (_player == null || _agent == null) return; // 必要なコンポーネントがない場合は処理をスキップ
-        if (!_isAttack)
-        {
-            CurrentState(); // 現在の状態に基づいた処理を実行
-            DetectPlayer(); // プレイヤーを検知
-        }
 
+        UpadteState();
     }
 
+    private void UpadteState()
+    {
+        if (_player == null || _agent == null) return; // 必要なコンポーネントがない場合は処理をスキップ
+        if (!_isEveryChase)
+        {
+            if (!_isAttack && !_isStay)
+            {
+                CurrentState(); // 現在の状態に基づいた処理を実行
+                DetectPlayer(); // プレイヤーを検知
+            }
+        }
+        else
+        {
+            if (!_isAttack)
+            {
+                CurrentState();
+            }
+
+        }
+    }
     /// <summary>
     /// 現在の状態に応じた動作を切り替える
     /// </summary>
@@ -92,6 +115,15 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attack:
                 _agent.speed = 0f;
                 break;
+            case EnemyState.Idle:
+                _agent.speed = 0;
+                break;
+            case EnemyState.EveryChase:
+                EveryChasePlayer();
+                _agent.speed = 15;
+                break;
+
+
 
         }
     }
@@ -144,7 +176,12 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-
+    private void EveryChasePlayer()
+    {
+            // プレイヤーの位置に向かう
+            _agent.SetDestination(_player.position);
+        
+    }
     /// <summary>
     /// プレイヤーを検知
     /// 検知範囲内にプレイヤーがいる場合、追跡状態に切り替える
@@ -153,7 +190,7 @@ public class EnemyAI : MonoBehaviour
     {
         Ray forwardRay = new Ray(this.gameObject.transform.position, transform.forward);
         Ray rightRay = new Ray(this.gameObject.transform.position, transform.forward + transform.right);
-        Ray LeftRay = new Ray(this.gameObject.transform.position, transform.forward - transform.right);
+        Ray leftRay = new Ray(this.gameObject.transform.position, transform.forward - transform.right);
 
         if (Physics.Raycast(forwardRay, out _hit, RAY_LENGTH))
         {
@@ -171,7 +208,7 @@ public class EnemyAI : MonoBehaviour
             }
 
         }
-        if (Physics.Raycast(LeftRay, out _hit, RAY_LENGTH))
+        if (Physics.Raycast(leftRay, out _hit, RAY_LENGTH))
         {
             if (_hit.collider.CompareTag(_playerTag))
             {
@@ -179,18 +216,45 @@ public class EnemyAI : MonoBehaviour
             }
 
         }
-        float sqrDetectionRange = _detectionRange * _detectionRange; // 範囲判定の効率化
-        if ((transform.position - _player.position).sqrMagnitude <= sqrDetectionRange)
-        {
-            EnemyCurrentState = EnemyState.Chase; // 追跡状態に切り替え
-        }
+        //Debug.DrawRay(rightRay.origin, rightRay.direction * RAY_LENGTH, Color.red, 100, false);
+        //Debug.DrawRay(forwardRay.origin, forwardRay.direction * RAY_LENGTH, Color.red, 100, false);
+        //Debug.DrawRay(leftRay.origin, leftRay.direction * RAY_LENGTH, Color.red, 100, false); ;
+        //float sqrDetectionRange = _detectionRange * _detectionRange; // 範囲判定の効率化
+        //if ((transform.position - _player.position).sqrMagnitude <= sqrDetectionRange)
+        //{
+        //    EnemyCurrentState = EnemyState.Chase; // 追跡状態に切り替え
+        //}
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag(_playerTag))
+        if (!_isInvincible)
         {
-            StartCoroutine(EnemyAttack());
-            ValueManager.Instance.Damage();
+            if (collision.gameObject.CompareTag(_playerTag))
+            {
+                if (!_isEveryChase)
+                {
+                    StartCoroutine(EnemyAttack());
+                    ValueManager.Instance.Damage();
+                    StartCoroutine(CantAttack());
+                }
+                else
+                {
+                    StartCoroutine(EveryEnemyAttack());
+                    ValueManager.Instance.Damage();
+                    StartCoroutine(CantAttack());
+                }
+              
+            }
+          
+        }
+       
+       
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Weapon"))
+        {
+            StartCoroutine(EnemyDamage());
         }
     }
     private IEnumerator EnemyAttack()
@@ -200,5 +264,38 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(WAIT_TIME);
         EnemyCurrentState = EnemyState.Patrol;
         _isAttack = false;
+    }private IEnumerator EveryEnemyAttack()
+    {
+        _isAttack = true;
+        EnemyCurrentState = EnemyState.Attack;
+        yield return new WaitForSeconds(WAIT_TIME);
+        EnemyCurrentState = EnemyState.EveryChase;
+        _isAttack = false;
+    }
+    public IEnumerator EnemyMoveStart()
+    {
+        yield return new WaitForSeconds(ENEMY_STAY_TIME);
+        _isStay = false;
+        EnemyCurrentState = EnemyState.Patrol;
+        MoveToNextWaypoint();
+    }
+    private IEnumerator EnemyDamage()
+    {
+        EnemyCurrentState = EnemyState.Idle;
+        _isStay = true;
+        yield return new WaitForSeconds(DAMAGE_WAIT_TIME);
+        EnemyCurrentState = EnemyState.Patrol;
+        _isStay = false;
+    }
+    private IEnumerator CantAttack()
+    {
+        _isInvincible = true;
+        yield return new WaitForSeconds(DAMAGE_WAIT_TIME);
+        _isInvincible = false;
+    }
+    public void EveryChaseON()
+    {
+        _isEveryChase = true;
+        EnemyCurrentState = EnemyState.EveryChase;
     }
 }

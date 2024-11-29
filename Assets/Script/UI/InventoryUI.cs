@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,17 +12,20 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private Image[] _inventorySlots;
     [SerializeField] private Image[] _inventoryBoxUI;
+    [SerializeField] private Image[] _inventoryBoxCoolDownUI;
     [SerializeField] private Text[] _indexText;
     [SerializeField] private List<Text> _lightBatteryText;
     private const int UNSELECT_INVENTORY_COLOR = 80;
     private const int SELECT_INVENTORY_COLOR = 255;
-    private const int MAX_SLOT = 5;
-
-    private void OnEnable()
+    private const int MAX_COOLDOWN = 3;
+    private const int MAX_FILLAMOUNT = 1;
+    private int _selectSlot;
+    private float _coolDown=0;
+    private bool _isUseItem = false;
+    private void Update()
     {
-        
+        UpdateCoolDown();
     }
-
     /// <summary>
     /// インベントリにアイテムのスプライトを保存する
     /// </summary>
@@ -74,12 +79,12 @@ public class InventoryUI : MonoBehaviour
     /// 使用したら個数を減らしてUIに表示する
     /// </summary>
     /// <param name="slotIndex"></param>
-    public void DeleteSlotText(int slotIndex)
+    public void DeleteSlotText(int slotIndex,int argument)
     {
         int cuurentCount = int.Parse(_indexText[slotIndex].text);//同じく
-        if (cuurentCount != 1)
+        if (cuurentCount != 0)
         {
-            cuurentCount -= 1;
+            cuurentCount -= argument;
             _indexText[slotIndex].text = cuurentCount.ToString();
         }
         else
@@ -145,6 +150,34 @@ public class InventoryUI : MonoBehaviour
         }
 
     }
+    public void CoolDownUI(int selectSlot) 
+    {
+        _selectSlot = selectSlot;
+        _isUseItem = true;
+    }
+    private void UpdateCoolDown()
+    {
+        if (_isUseItem)
+        {
+            // クールタイムが進行中
+            if (_coolDown < MAX_COOLDOWN)
+            {
+                _coolDown += Time.deltaTime; // 経過時間を加算
+                float fillRatio = 1 - (_coolDown / MAX_COOLDOWN); // 残り時間に応じて割合を計算
+                _inventoryBoxCoolDownUI[_selectSlot].enabled = true;
+                _inventoryBoxCoolDownUI[_selectSlot].fillAmount = Mathf.Clamp(fillRatio, 0, MAX_FILLAMOUNT); // fillAmountを更新
+            }
+            else
+            {
+                // クールタイムが終了
+                _isUseItem = false;
+                _inventoryBoxCoolDownUI[_selectSlot].enabled = false;
+                _inventoryBoxCoolDownUI[_selectSlot].fillAmount = MAX_FILLAMOUNT; // 完全リセット
+                _coolDown = 0f; // カウンターをリセット
+            }
+        }
+    }
+
 
 
 }
