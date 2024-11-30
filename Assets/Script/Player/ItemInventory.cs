@@ -91,7 +91,7 @@ public class ItemInventory : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1 + addnumber))
             {
                 _selectInventoryNumber = addnumber;
-                _inventoryUI.SelectInventoryUI(addnumber);
+                _inventoryUI.SelectInventoryUI(addnumber, _items[addnumber]);
                 break;
             }
         }

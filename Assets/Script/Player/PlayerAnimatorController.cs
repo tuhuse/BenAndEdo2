@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// プレイヤーのアニメーション
+/// </summary>
 public class PlayerAnimatorController : MonoBehaviour
 {
     private Animator _animator;

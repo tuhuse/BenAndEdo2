@@ -14,31 +14,38 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Image[] _inventoryBoxUI;
     [SerializeField] private Image[] _inventoryBoxCoolDownUI;
     [SerializeField] private Text[] _indexText;
+    [SerializeField] private Text _descriptionText;
     [SerializeField] private List<Text> _lightBatteryText;
     private const int UNSELECT_INVENTORY_COLOR = 80;
     private const int SELECT_INVENTORY_COLOR = 255;
     private const int MAX_COOLDOWN = 3;
     private const int MAX_FILLAMOUNT = 1;
     private int _selectSlot;
-    private float _coolDown=0;
+    private int _preselectSlot;
+    private float _coolDown = 0;
+    private float _indicationTime = 0;
     private bool _isUseItem = false;
+    private bool _isIndication = false;
+    private bool _isResetIndication = false;
     private void Update()
     {
         UpdateCoolDown();
+        DesprcitionIndication();
     }
     /// <summary>
     /// インベントリにアイテムのスプライトを保存する
     /// </summary>
     /// <param name="slotIndex"></param>
     /// <param name="itemIcon"></param>
-    public void UpdateSlotImage(int slotIndex, Sprite itemIcon,Item.ItemType light)
+    public void UpdateSlotImage(int slotIndex, Sprite itemIcon, Item.ItemType light)
     {
         if (slotIndex < _inventorySlots.Length)
         {
             _inventorySlots[slotIndex].sprite = itemIcon;
             _inventorySlots[slotIndex].enabled = true;
             _inventorySlots[slotIndex].enabled = itemIcon != null;
-        }if (light == Item.ItemType.Light)
+        }
+        if (light == Item.ItemType.Light)
         {
             _lightBatteryText[slotIndex].enabled = true;
         }
@@ -79,7 +86,7 @@ public class InventoryUI : MonoBehaviour
     /// 使用したら個数を減らしてUIに表示する
     /// </summary>
     /// <param name="slotIndex"></param>
-    public void DeleteSlotText(int slotIndex,int argument)
+    public void DeleteSlotText(int slotIndex, int argument)
     {
         int cuurentCount = int.Parse(_indexText[slotIndex].text);//同じく
         if (cuurentCount != 0)
@@ -118,7 +125,7 @@ public class InventoryUI : MonoBehaviour
     /// 選択しているインベントリの色の透明度を変えている
     /// </summary>
     /// <param name="selectIndex"></param>
-    public void SelectInventoryUI(int selectIndex)
+    public void SelectInventoryUI(int selectIndex, Item itemDescription)
     {
 
         for (int selectNumber = 0; selectNumber < _indexText.Length; selectNumber++)
@@ -130,27 +137,40 @@ public class InventoryUI : MonoBehaviour
             Color32 inventoryBoxColor = _inventoryBoxUI[selectNumber].color;
             if (selectNumber == selectIndex)
             {
-                textColor.a =SELECT_INVENTORY_COLOR; // 完全不透明
+                textColor.a = SELECT_INVENTORY_COLOR; // 完全不透明
                 itemImageColor.a = SELECT_INVENTORY_COLOR;
                 inventoryBoxColor.a = SELECT_INVENTORY_COLOR;
                 batteryTextColor.a = SELECT_INVENTORY_COLOR;
             }
             else
             {
-                textColor.a =UNSELECT_INVENTORY_COLOR; // 半透明（例）
+                textColor.a = UNSELECT_INVENTORY_COLOR; // 半透明（例）
                 itemImageColor.a = UNSELECT_INVENTORY_COLOR;
                 inventoryBoxColor.a = UNSELECT_INVENTORY_COLOR;
                 batteryTextColor.a = UNSELECT_INVENTORY_COLOR;
             }
 
             _indexText[selectNumber].color = textColor;
-            _lightBatteryText[selectNumber].color=batteryTextColor;
+            _lightBatteryText[selectNumber].color = batteryTextColor;
             _inventorySlots[selectNumber].color = itemImageColor;
             _inventoryBoxUI[selectNumber].color = inventoryBoxColor;
         }
 
+        if (selectIndex != _preselectSlot)
+        {
+            _isResetIndication = true;
+            _preselectSlot = selectIndex;
+        }
+        if(itemDescription != null)
+        {
+            _isIndication = true;
+            _descriptionText.enabled = true;
+            _descriptionText.text = itemDescription.Description;
+        }
+        
+
     }
-    public void CoolDownUI(int selectSlot) 
+    public void CoolDownUI(int selectSlot)
     {
         _selectSlot = selectSlot;
         _isUseItem = true;
@@ -177,7 +197,27 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
-
+    private void DesprcitionIndication()
+    {
+        if (_isIndication)
+        {
+            if (_isResetIndication)
+            {
+                _indicationTime = 0;
+                _isResetIndication = false;
+            }
+            if (_indicationTime <= MAX_COOLDOWN)
+            {
+                _indicationTime += Time.deltaTime;
+            }
+            else
+            {
+                _descriptionText.enabled = false;
+                _indicationTime = 0;
+                _isIndication = false;
+            }
+        }
+    }
 
 
 }

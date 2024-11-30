@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     {
         if (ValueManager.Instance.PlayerHP == 0)
         {
-            SceneManager.LoadScene("GameOver");
+            StartCoroutine(GameOverTransition());
         }
        
     }public void OnGameOver2()
@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator GameOverTransition()
     {
+        Cursor.lockState = CursorLockMode.None;
         //アニメーション流したいこの頃
         yield return new WaitForSeconds(WAIT_TIME);
         SceneManager.LoadScene("GameOver");
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     public void OnGameClear()
     {
+        Cursor.lockState = CursorLockMode.None;  
         SceneManager.LoadScene("GameClear");
     }
 }

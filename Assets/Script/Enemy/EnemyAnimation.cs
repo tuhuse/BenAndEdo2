@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
+/// <summary>
+/// 敵のアニメーション
+/// </summary>
 public class EnemyAnimation : MonoBehaviour
 {
     private Animator _animator;

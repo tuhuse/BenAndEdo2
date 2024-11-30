@@ -6,6 +6,7 @@ public abstract class Item : ScriptableObject
 
 
     [SerializeField] private string _itemName;
+    [SerializeField] private string _itemJapaneseName;
     [SerializeField] private Sprite _icon;
     [SerializeField] private bool _isStackable;
     [SerializeField, TextArea] private string _description;
@@ -26,6 +27,7 @@ public abstract class Item : ScriptableObject
    /// </summary>
     public ItemType MyItemType => _itemType;
     public string MyItemName => _itemName;
+    public string MyItemJapaneseName=>_itemJapaneseName;
     public Sprite MyIcon => _icon;
     public bool IsStackable => _isStackable;
     public string Description => _description;

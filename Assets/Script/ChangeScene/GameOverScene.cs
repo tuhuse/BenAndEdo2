@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class GameClearScene : MonoBehaviour
+public class GameOverScene : MonoBehaviour
 {
 
-   
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
     public void OnTitle()
     {
         SceneManager.LoadScene("Title");
-    } public void OnReTry()
+    }
+    public void OnMain()
     {
         SceneManager.LoadScene("MainScene");
     }

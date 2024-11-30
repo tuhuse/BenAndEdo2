@@ -20,8 +20,6 @@ public class AudioManager : MonoBehaviour
     void Update()
     {
         StateSwitch();
-
-
     }
     private void StateSwitch()
     {
@@ -75,5 +73,31 @@ public class AudioManager : MonoBehaviour
     public void EscapeTrue()
     {
         _isEscape = true;
+    }
+    public void ItemUseSE()
+    {
+
+    }
+    public void DamageSE()
+    {
+
+    }
+    public void KeySE()
+    {
+
+    }
+    public void PushButtonSE()
+    {
+
+    }public void AttackSE()
+    {
+
+    }public void TimerSE()
+    {
+
+    }
+    public void OpenCashBoxSE()
+    {
+
     }
 }

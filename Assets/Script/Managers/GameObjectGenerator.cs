@@ -17,7 +17,6 @@ public class GameObjectGenerator : MonoBehaviour
     private const int MAX_RANDOM_INDEX = 6;
     private const int MIN_RANDOM_INDEX = 0;
     private int _selectPosition = default;
-    private int[] _randomindex = default;
     // Start is called before the first frame update
     void OnEnable()
     {

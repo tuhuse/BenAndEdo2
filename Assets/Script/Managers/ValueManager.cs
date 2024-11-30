@@ -6,9 +6,9 @@ using UnityEngine;
 /// </summary>
 public class ValueManager : MonoBehaviour
 {
-    private Coroutine _dashRecoveryCoroutine = default; // ダッシュHP回復のコルーチン管理用
+  
     [SerializeField] private LifeUI _lifeUI = default;
-
+    [SerializeField] private DamageUI _damageUI = default;
     // 定数定義
     private const float MAX_SPEED = 8f; // 最大移動速度
     private const float MAX_DASH_HP = 100f; // ダッシュ用のHPの最大値
@@ -88,6 +88,7 @@ public class ValueManager : MonoBehaviour
     /// </summary>
     public void Damage()
     {
+        _damageUI.StartDamageUI();
         PlayerHP--; // プレイヤーHPを減少
         _lifeUI.DamageLife(PlayerHP);
         GameManager.Instance.OnGameOver();

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+/// <summary>
+/// ƒvƒŒƒCƒ„[‚É‰½‚ğ‚â‚Á‚Ä‚Ù‚µ‚¢‚©“`‚¦‚éUI
+/// </summary>
 public class MissionUI : MonoBehaviour
 {
 

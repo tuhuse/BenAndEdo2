@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// ƒvƒŒƒCƒ„[‚Ì‹““®
+/// </summary>
 public class PlayerMoveController : MonoBehaviour
 {
     [SerializeField] private float _dashMultiplier = 2f;
