@@ -7,6 +7,7 @@ public class WeaponItem : Item
 
     public override void ItemEffect()
     {
+        AudioManager.Instance.AttackSE();
         ItemManager.Instance.WeaponStart();
     }
    

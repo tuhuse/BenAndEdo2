@@ -91,6 +91,7 @@ public class ValueManager : MonoBehaviour
         _damageUI.StartDamageUI();
         PlayerHP--; // プレイヤーHPを減少
         _lifeUI.DamageLife(PlayerHP);
+        AudioManager.Instance.DamageSE();
         GameManager.Instance.OnGameOver();
         StartCoroutine(ReturnSpeed()); // 一時的に移動速度を減少
     }

@@ -219,11 +219,11 @@ public class EnemyAI : MonoBehaviour
         //Debug.DrawRay(rightRay.origin, rightRay.direction * RAY_LENGTH, Color.red, 100, false);
         //Debug.DrawRay(forwardRay.origin, forwardRay.direction * RAY_LENGTH, Color.red, 100, false);
         //Debug.DrawRay(leftRay.origin, leftRay.direction * RAY_LENGTH, Color.red, 100, false); ;
-        //float sqrDetectionRange = _detectionRange * _detectionRange; // ”ÍˆÍ”»’è‚ÌŒø—¦‰»
-        //if ((transform.position - _player.position).sqrMagnitude <= sqrDetectionRange)
-        //{
-        //    EnemyCurrentState = EnemyState.Chase; // ’ÇÕó‘Ô‚ÉØ‚è‘Ö‚¦
-        //}
+        float sqrDetectionRange = 5*5; // ”ÍˆÍ”»’è‚ÌŒø—¦‰»
+        if ((transform.position - _player.position).sqrMagnitude <= sqrDetectionRange)
+        {
+            EnemyCurrentState = EnemyState.Chase; // ’ÇÕó‘Ô‚ÉØ‚è‘Ö‚¦
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -254,7 +254,15 @@ public class EnemyAI : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Weapon"))
         {
-            StartCoroutine(EnemyDamage());
+            if (!_isEveryChase)
+            {
+                StartCoroutine(EnemyDamage());
+            }
+            else
+            {
+                StartCoroutine(EveryEnemyDamage());
+            }
+           
         }
     }
     private IEnumerator EnemyAttack()
@@ -285,6 +293,13 @@ public class EnemyAI : MonoBehaviour
         _isStay = true;
         yield return new WaitForSeconds(DAMAGE_WAIT_TIME);
         EnemyCurrentState = EnemyState.Patrol;
+        _isStay = false;
+    } private IEnumerator EveryEnemyDamage()
+    {
+        EnemyCurrentState = EnemyState.Idle;
+        _isStay = true;
+        yield return new WaitForSeconds(DAMAGE_WAIT_TIME);
+        EnemyCurrentState = EnemyState.EveryChase;
         _isStay = false;
     }
     private IEnumerator CantAttack()
