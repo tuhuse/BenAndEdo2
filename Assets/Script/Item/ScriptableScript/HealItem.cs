@@ -7,6 +7,7 @@ public class HealItem : Item
    
     public override void ItemEffect()
     {
+        AudioManager.Instance.HealSE();
         ValueManager.Instance.Heal();
     }
 }

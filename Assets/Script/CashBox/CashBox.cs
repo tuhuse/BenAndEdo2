@@ -25,6 +25,7 @@ public class CashBox : MonoBehaviour
 
         if (distancePlayer < _openRange)
         {
+            AudioManager.Instance.OpenCashBoxSE();
             StartCoroutine(StateBool());
             MissionUI.Instance.Mission4();
         }

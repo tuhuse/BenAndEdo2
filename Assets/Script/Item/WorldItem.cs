@@ -37,6 +37,7 @@ public class WorldItem : MonoBehaviour
             // Gキーが押された場合、アイテムをインベントリに追加
             if (Input.GetKeyDown(KeyCode.G))
             {
+                AudioManager.Instance.ItemGetSE();
                 _inventoryManager.AddItem(_itemData);
                 _itemUI.TextOff();
                 Destroy(gameObject);  // アイテムをシーンから削除

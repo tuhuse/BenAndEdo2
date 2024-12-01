@@ -7,7 +7,8 @@ public class LightBattery : Item
 {
 
     public override void ItemEffect()
-    {        
+    {
+        AudioManager.Instance.BatteryUseSE();
             ItemManager.Instance.GetBattery();
         
     }

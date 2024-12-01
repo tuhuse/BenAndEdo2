@@ -26,6 +26,7 @@ public class UnlockingButton : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
+                AudioManager.Instance.PushButtonSE();
                 _objectGenerator.PositionSelect();
                 _unDoor = false;
                _countDownTimer.StartTimer = true;

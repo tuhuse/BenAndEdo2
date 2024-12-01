@@ -174,6 +174,7 @@ public class ItemManager : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.KeyInstantiateSE();
             KeyInstantiate();
         }
 

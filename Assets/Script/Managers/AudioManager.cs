@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -15,7 +16,7 @@ public class AudioManager : MonoBehaviour
     private EnemyAI.EnemyState _enemyState;
 
     private bool _isEscape = false;
-
+    private bool _isWarningBGM = true;
     public static AudioManager Instance { get; private set; }
     private void Awake()
     {
@@ -52,16 +53,12 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            if (_audioBGM.clip != _audioClip[1])
+            if (_isWarningBGM)
             {
-                _audioBGM.clip = _audioClip[1];
-                _audioBGM.pitch = 2;
-                _audioBGM.Play();
+                StartCoroutine(WarningBGM());
+                _isWarningBGM = false;
             }
-            else
-            {
-                _audioBGM.pitch = 2;
-            }
+            
         }
 
     }
@@ -86,6 +83,16 @@ public class AudioManager : MonoBehaviour
                 break;
         }
     }
+private IEnumerator WarningBGM()
+    {
+        _audioBGM.clip = _audioClip[4];
+        _audioBGM.Play();
+        int waitTime = 4;
+        yield return new WaitForSeconds(waitTime);
+        _audioBGM.clip = _audioClip[1];
+        _audioBGM.pitch = 2;
+        _audioBGM.Play();
+    }
     public void EscapeTrue()
     {
         _isEscape = true;
@@ -102,33 +109,40 @@ public class AudioManager : MonoBehaviour
     }
     public void HealSE()
     {
-
-    }
-    public void ItemGetSE()
-    {
-        _audioSE.clip = _audioClip[3];
-        _audioSE.PlayOneShot(_audioClip[3]);
-    }
-
-    public void KeySE()
-    {
-        _audioSE.clip = _audioClip[4];
-        _audioSE.PlayOneShot(_audioClip[4]);
-    }
-    public void PushButtonSE()
-    {
         _audioSE.clip = _audioClip[5];
         _audioSE.PlayOneShot(_audioClip[5]);
     }
-  
-    public void TimerSE()
+    public void OpenCashBoxSE()
+    {
+        _audioSE.clip = _audioClip[6];
+        _audioSE.PlayOneShot(_audioClip[6]);
+    }
+    public void PushButtonSE()
     {
         _audioSE.clip = _audioClip[7];
         _audioSE.PlayOneShot(_audioClip[7]);
     }
-    public void OpenCashBoxSE()
+    public void ItemGetSE()
     {
         _audioSE.clip = _audioClip[8];
         _audioSE.PlayOneShot(_audioClip[8]);
     }
+    
+    public void KeyInstantiateSE()
+    {
+        _audioSE.clip = _audioClip[9];
+        _audioSE.PlayOneShot(_audioClip[9]);
+    }
+  
+  
+    public void BatteryUseSE()
+    {
+        _audioSE.clip = _audioClip[10];
+        _audioSE.PlayOneShot(_audioClip[10]);
+    }
+    public void FlashLightSE()
+    {
+        _audioSE.clip = _audioClip[11];
+        _audioSE.PlayOneShot(_audioClip[11]);
+    }    
 }

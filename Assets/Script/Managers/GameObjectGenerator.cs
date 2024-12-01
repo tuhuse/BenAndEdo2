@@ -10,12 +10,9 @@ public class GameObjectGenerator : MonoBehaviour
     [SerializeField] private SpawnPrefabsData _flashlightData;          // 懐中電灯データ（個別管理）
     [SerializeField] private SpawnPrefabsData _cashBoxData;          // 金庫データ（個別管理）
     [SerializeField] private SpawnPrefabsData _escapeDoorData;          // 脱出ドアデータ（個別管理）
-    private UnlockingButton _unlockingButton = default;
     private GameObject _southAndNorthGoalDoor;
     private const int MAX_INDEX = 4;
     private const int MIN_INDEX = 0;
-    private const int MAX_RANDOM_INDEX = 6;
-    private const int MIN_RANDOM_INDEX = 0;
     private int _selectPosition = default;
     // Start is called before the first frame update
     void OnEnable()
@@ -30,7 +27,7 @@ public class GameObjectGenerator : MonoBehaviour
         {
             SpawnItems(spawnData);
         }
-        _unlockingButton = FindFirstObjectByType<UnlockingButton>();
+       
     }
 
     // Update is called once per frame
