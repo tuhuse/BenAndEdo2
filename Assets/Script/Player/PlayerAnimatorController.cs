@@ -11,6 +11,7 @@ public class PlayerAnimatorController : MonoBehaviour
     [SerializeField] private RuntimeAnimatorController _idle;
     [SerializeField] private RuntimeAnimatorController _runController;
     [SerializeField] private RuntimeAnimatorController _walkController;
+    [SerializeField] private RuntimeAnimatorController _deathController;
     [SerializeField] private PlayerMoveController _player;
 
     private PlayerMoveController.PlayerState _previousStatus;
@@ -53,8 +54,8 @@ public class PlayerAnimatorController : MonoBehaviour
                 _animator.runtimeAnimatorController = _runController;
                 break;
 
-            default:
-                Debug.LogWarning("未対応のステータスです: " + newStatus);
+            case PlayerMoveController.PlayerState.Death:
+                _animator.runtimeAnimatorController = _deathController;
                 break;
         }
     }

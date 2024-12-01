@@ -17,7 +17,8 @@ public class PlayerMoveController : MonoBehaviour
     {
         Idle,
         Walk,
-        Run
+        Run,
+        Death
     }
     public PlayerState PlayerCurrentsState { get; private set; }
 
@@ -36,6 +37,10 @@ public class PlayerMoveController : MonoBehaviour
     void Update()
     {
         HandleDashInput();
+        if (_valueManager.PlayerHP == 0)
+        {
+            PlayerCurrentsState = PlayerState.Death;
+        }
     }
 
     private void HandleDashInput()
@@ -67,41 +72,49 @@ public class PlayerMoveController : MonoBehaviour
 
     private void PlayerMove()
     {
-        Vector3 moveDirection = Vector3.zero;
-
-        // 移動入力の処理
-        if (Input.GetKey(KeyCode.D))
-            moveDirection += transform.right;
-        if (Input.GetKey(KeyCode.A))
-            moveDirection -= transform.right;
-        if (Input.GetKey(KeyCode.W))
-            moveDirection += transform.forward;
-        if (Input.GetKey(KeyCode.S))
-            moveDirection -= transform.forward;
-
-        // 状態の更新
-        if (moveDirection == Vector3.zero)
+        if (_valueManager.PlayerHP == 0)
         {
-            PlayerCurrentsState = PlayerState.Idle;
-        }
-        else if (_isDash)
-        {
-            PlayerCurrentsState = PlayerState.Run;
+            return;
         }
         else
         {
-            PlayerCurrentsState = PlayerState.Walk;
+            Vector3 moveDirection = Vector3.zero;
+
+            // 移動入力の処理
+            if (Input.GetKey(KeyCode.D))
+                moveDirection += transform.right;
+            if (Input.GetKey(KeyCode.A))
+                moveDirection -= transform.right;
+            if (Input.GetKey(KeyCode.W))
+                moveDirection += transform.forward;
+            if (Input.GetKey(KeyCode.S))
+                moveDirection -= transform.forward;
+
+            // 状態の更新
+            if (moveDirection == Vector3.zero)
+            {
+                PlayerCurrentsState = PlayerState.Idle;
+            }
+            else if (_isDash)
+            {
+                PlayerCurrentsState = PlayerState.Run;
+            }
+            else
+            {
+                PlayerCurrentsState = PlayerState.Walk;
+            }
+
+            // ダッシュの速度計算
+            float speed = _valueManager.MoveSpeed * (_isDash ? _dashMultiplier : 1f);
+
+            // 壁との衝突に対応した移動計算
+            moveDirection = moveDirection.normalized * speed;
+            Vector3 adjustedVelocity = AdjustDirectionForCollisions(moveDirection);
+
+            // Rigidbodyのvelocityを設定して移動
+            _rb.velocity = new Vector3(adjustedVelocity.x, _rb.velocity.y, adjustedVelocity.z);
         }
-
-        // ダッシュの速度計算
-        float speed = _valueManager.MoveSpeed * (_isDash ? _dashMultiplier : 1f);
-
-        // 壁との衝突に対応した移動計算
-        moveDirection = moveDirection.normalized * speed;
-        Vector3 adjustedVelocity = AdjustDirectionForCollisions(moveDirection);
-
-        // Rigidbodyのvelocityを設定して移動
-        _rb.velocity = new Vector3(adjustedVelocity.x, _rb.velocity.y, adjustedVelocity.z);
+       
     }
 
     /// <summary>

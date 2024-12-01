@@ -7,12 +7,11 @@ public class TitleScene : MonoBehaviour
 {
     
 
-    // Update is called once per frame
-    void Update()
+    public void OnStart()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            SceneManager.LoadScene("MainScene");
-        }    
+        SceneManager.LoadScene("MainScene");
+    }public void OnEnd()
+    {
+        Application.Quit();
     }
 }

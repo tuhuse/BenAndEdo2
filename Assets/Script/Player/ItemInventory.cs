@@ -91,10 +91,22 @@ public class ItemInventory : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1 + addnumber))
             {
                 _selectInventoryNumber = addnumber;
-                _inventoryUI.SelectInventoryUI(addnumber, _items[addnumber]);
+                _inventoryUI.SelectInventoryUI(_selectInventoryNumber, _items[_selectInventoryNumber]);
                 break;
             }
         }
+        if (Input.GetAxis("Mouse ScrollWheel")<0)
+        {
+            _selectInventoryNumber++;
+            if (_selectInventoryNumber == 5)
+            {
+                _selectInventoryNumber = 0;
+            }
+            
+            _inventoryUI.SelectInventoryUI(_selectInventoryNumber, _items[_selectInventoryNumber]);
+           
+        }
+      
     }
     /// <summary>
     /// アイテムを追加する処理

@@ -73,8 +73,15 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     void Update()
     {
-
-        UpadteState();
+        if (ValueManager.Instance.PlayerHP == 0)
+        {
+            return;
+        }
+        else
+        {
+            UpadteState();
+        }
+        
     }
 
     private void UpadteState()
