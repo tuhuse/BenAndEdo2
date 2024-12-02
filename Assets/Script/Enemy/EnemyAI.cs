@@ -22,6 +22,7 @@ public class EnemyAI : MonoBehaviour
     private string _playerTag = "Player";
     private Transform _player; // プレイヤーのTransform（ゲーム開始時に取得）
     private NavMeshAgent _agent;
+    private BoxCollider _boxCollider;
     private bool _isAttack = false;
     private bool _isStay = true;
     private bool _isInvincible = false;
@@ -65,6 +66,7 @@ public class EnemyAI : MonoBehaviour
         // 初期状態を巡回に設定し、最初のWaypointに向かう
         EnemyCurrentState = EnemyState.Idle;
         //MoveToNextWaypoint();
+        _boxCollider = GetComponent<BoxCollider>();
     }
 
     /// <summary>
@@ -275,16 +277,20 @@ public class EnemyAI : MonoBehaviour
     private IEnumerator EnemyAttack()
     {
         _isAttack = true;
+        _boxCollider.isTrigger = true;
         EnemyCurrentState = EnemyState.Attack;
         yield return new WaitForSeconds(WAIT_TIME);
         EnemyCurrentState = EnemyState.Patrol;
+        _boxCollider.isTrigger = false;
         _isAttack = false;
     }private IEnumerator EveryEnemyAttack()
     {
         _isAttack = true;
+        _boxCollider.isTrigger = true;
         EnemyCurrentState = EnemyState.Attack;
         yield return new WaitForSeconds(WAIT_TIME);
         EnemyCurrentState = EnemyState.EveryChase;
+        _boxCollider.isTrigger = false;
         _isAttack = false;
     }
     public IEnumerator EnemyMoveStart()
