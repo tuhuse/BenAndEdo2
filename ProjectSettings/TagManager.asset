@@ -14,6 +14,7 @@ TagManager:
   - InventoryUI
   - FlashLight
   - FlashLight2
+  - LightCollider
   layers:
   - Default
   - TransparentFX

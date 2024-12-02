@@ -15,8 +15,6 @@ public class ValueManager : MonoBehaviour
     private const float STAMINA_HEAL = 7.5f; // ダッシュHPの回復量
     private const int MAX_PLAYER_HP = 3; // プレイヤーの最大HP
     private const int STAMINA_DECREASE_RATE = 20; // ダッシュ時のHP減少速度
-    private const int STAMINA_RECOVERY_WAIT_TIME = 1; // ダッシュHP回復の間隔
-    private const int STAMINA_RECOVERY_INITIAL_DELAY = 2; // ダッシュHP回復開始までの遅延
     private const int RETERN_SPEED = 3;
     private const float SPEED_DECREASE_AMOUNT = 4f; // ダメージ時の移動速度減少量
 

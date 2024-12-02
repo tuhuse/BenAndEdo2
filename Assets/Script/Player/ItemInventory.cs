@@ -106,7 +106,18 @@ public class ItemInventory : MonoBehaviour
             _inventoryUI.SelectInventoryUI(_selectInventoryNumber, _items[_selectInventoryNumber]);
            
         }
-      
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            _selectInventoryNumber--;
+            if (_selectInventoryNumber == -1)
+            {
+                _selectInventoryNumber = 4;
+            }
+
+            _inventoryUI.SelectInventoryUI(_selectInventoryNumber, _items[_selectInventoryNumber]);
+
+        }
+
     }
     /// <summary>
     /// アイテムを追加する処理
