@@ -21,6 +21,7 @@ public class CameraView : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;  // カーソルをロック
         _camera = _cameraPosi.GetComponent<Camera>();
+        SwitchCamera();
     }
 
     private void FixedUpdate()
